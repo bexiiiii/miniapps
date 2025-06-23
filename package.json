@@ -1,12 +1,13 @@
 {
-  "name": "relivator",
-  "description": "Relivator is a robust eCommerce template built with Next.js. It's designed for developers who want a fast, modern, and scalable foundation without reinventing the backend.",
+  "name": "FoodSave",
+  "description": "Relivator is a robust eCommerce template built with Next.js. It's designed for developers.",
   "version": "1.4.6",
   "type": "module",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "start": "next start",
     "dev:turbo": "next dev --turbopack",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
