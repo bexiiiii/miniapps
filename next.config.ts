@@ -12,6 +12,8 @@ export default {
       { hostname: "**.unsplash.com", protocol: "https" },
       { hostname: "api.github.com", protocol: "https" },
       { hostname: "utfs.io", protocol: "https" },
+      { hostname: "halaldamu.kz", protocol: "https" },
+      { hostname: "localhost", protocol: "http" },
     ],
   },
 } satisfies NextConfig;

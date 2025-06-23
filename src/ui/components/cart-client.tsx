@@ -14,6 +14,9 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
   DrawerTrigger,
 } from "~/ui/primitives/drawer";
 import { Separator } from "~/ui/primitives/separator";
@@ -33,6 +36,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
+  availableQuantity?: number; // Available stock quantity
 }
 
 interface CartProps {
@@ -58,6 +62,15 @@ export function CartClient({ className, mockCart }: CartProps) {
 
   const handleUpdateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
+    
+    // Find the item to check available quantity
+    const item = cartItems.find(item => item.id === id);
+    if (item && item.availableQuantity && newQuantity > item.availableQuantity) {
+      // Show warning message or handle out of stock scenario
+      alert(`Sorry, only ${item.availableQuantity} items available in stock.`);
+      return;
+    }
+    
     setCartItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item,
@@ -139,13 +152,13 @@ export function CartClient({ className, mockCart }: CartProps) {
                 {isDesktop ? (
                   <SheetClose asChild>
                     <Link href="/products">
-                      <Button>Browse Products</Button>
+                      <Button>Посмотреть боксы</Button>
                     </Link>
                   </SheetClose>
                 ) : (
                   <DrawerClose asChild>
                     <Link href="/products">
-                      <Button>Browse Products</Button>
+                      <Button>Посмотреть боксы</Button>
                     </Link>
                   </DrawerClose>
                 )}
@@ -171,6 +184,7 @@ export function CartClient({ className, mockCart }: CartProps) {
                         alt={item.name}
                         className="object-cover"
                         fill
+                        sizes="80px"
                         src={item.image}
                       />
                     </div>
@@ -236,7 +250,9 @@ export function CartClient({ className, mockCart }: CartProps) {
                               rounded-r-md border-l text-muted-foreground
                               transition-colors
                               hover:bg-muted hover:text-foreground
+                              disabled:opacity-50 disabled:cursor-not-allowed
                             `}
+                            disabled={item.availableQuantity ? item.quantity >= item.availableQuantity : false}
                             onClick={() =>
                               handleUpdateQuantity(item.id, item.quantity + 1)
                             }
@@ -344,7 +360,13 @@ export function CartClient({ className, mockCart }: CartProps) {
       ) : (
         <Drawer onOpenChange={setIsOpen} open={isOpen}>
           <DrawerTrigger asChild>{CartTrigger}</DrawerTrigger>
-          <DrawerContent>{CartContent}</DrawerContent>
+          <DrawerContent>
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>Shopping Cart</DrawerTitle>
+              <DrawerDescription>Items in your cart</DrawerDescription>
+            </DrawerHeader>
+            {CartContent}
+          </DrawerContent>
         </Drawer>
       )}
     </div>

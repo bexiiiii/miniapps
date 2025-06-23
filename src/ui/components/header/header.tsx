@@ -1,14 +1,15 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingCart, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { SEO_CONFIG } from "~/app";
-import { useCurrentUser } from "~/lib/auth-client";
+import { useAuth } from "~/lib/auth-context";
 import { cn } from "~/lib/cn";
 import { Cart } from "~/ui/components/cart";
+import { CartBackend } from "~/ui/components/cart-backend";
 import { Button } from "~/ui/primitives/button";
 import { Skeleton } from "~/ui/primitives/skeleton";
 
@@ -23,65 +24,39 @@ interface HeaderProps {
 
 export function Header({ showAuth = true }: HeaderProps) {
   const pathname = usePathname();
-  const { isPending, user } = useCurrentUser();
+  const { user, loading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const mainNavigation = [
-    { href: "/", name: "Home" },
-    { href: "/products", name: "Products" },
+    { href: "/", name: "Главная" },
+    { href: "/products", name: "Боксы" },
   ];
 
-  const dashboardNavigation = [
-    { href: "/dashboard/stats", name: "Stats" },
-    { href: "/dashboard/profile", name: "Profile" },
-    { href: "/dashboard/settings", name: "Settings" },
-    { href: "/dashboard/uploads", name: "Uploads" },
-    { href: "/admin/summary", name: "Admin" },
-  ];
-
-  const isDashboard =
-    user &&
-    (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")); // todo: remove /admin when admin role is implemented
-  const navigation = isDashboard ? dashboardNavigation : mainNavigation;
+  const navigation = mainNavigation;
 
   const renderContent = () => (
     <header
-      className={`
-        sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur
-        supports-[backdrop-filter]:bg-background/60
-      `}
+      className={cn(
+        "sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur",
+        "supports-[backdrop-filter]:bg-background/60"
+      )}
     >
-      <div
-        className={`
-          container mx-auto max-w-7xl px-4
-          sm:px-6
-          lg:px-8
-        `}
-      >
+      <div className={cn("container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8")}>
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link className="flex items-center gap-2" href="/">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center">
               <span
                 className={cn(
-                  "text-xl font-bold",
-                  !isDashboard &&
-                    `
-                      bg-gradient-to-r from-primary to-primary/70 bg-clip-text
-                      tracking-tight text-transparent
-                    `,
+                  "text-xl font-bold text-primary",
+                  "hover:text-primary/80 transition-colors"
                 )}
               >
                 {SEO_CONFIG.name}
               </span>
             </Link>
-            <nav
-              className={`
-                hidden
-                md:flex
-              `}
-            >
+            <nav className={cn("hidden md:flex")}>
               <ul className="flex items-center gap-6">
-                {isPending
+                {loading
                   ? Array.from({ length: navigation.length }).map((_, i) => (
                       <li key={i}>
                         <Skeleton className="h-6 w-20" />
@@ -95,16 +70,13 @@ export function Header({ showAuth = true }: HeaderProps) {
                       return (
                         <li key={item.name}>
                           <Link
-                            className={cn(
-                              `
-                                text-sm font-medium transition-colors
-                                hover:text-primary
-                              `,
-                              isActive
-                                ? "font-semibold text-primary"
-                                : "text-muted-foreground",
-                            )}
                             href={item.href}
+                            className={cn(
+                              "text-sm font-medium transition-colors hover:text-primary",
+                              isActive
+                                ? "text-foreground"
+                                : "text-foreground/60"
+                            )}
                           >
                             {item.name}
                           </Link>
@@ -116,58 +88,53 @@ export function Header({ showAuth = true }: HeaderProps) {
           </div>
 
           <div className="flex items-center gap-4">
-            {!isDashboard &&
-              (isPending ? (
-                <Skeleton className={`h-9 w-9 rounded-full`} />
-              ) : (
-                <Cart />
-              ))}
+            <ThemeToggle />
 
-            {isPending ? (
+            <CartBackend
+              CartTrigger={
+                <Button
+                  aria-label="Open cart"
+                  className="relative h-9 w-9 rounded-full"
+                  size="icon"
+                  variant="outline"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                </Button>
+              }
+            />
+
+            {loading ? (
               <Skeleton className="h-9 w-9 rounded-full" />
             ) : (
               <NotificationsWidget />
             )}
 
             {showAuth && (
-              <div
-                className={`
-                  hidden
-                  md:block
-                `}
-              >
+              <div className={cn("hidden md:block")}>
                 {user ? (
                   <HeaderUserDropdown
-                    isDashboard={!!isDashboard}
+                    isDashboard={false}
                     userEmail={user.email}
-                    userImage={user.image}
-                    userName={user.name}
+                    userImage={null}
+                    userName={`${user.firstName} ${user.lastName}`}
                   />
-                ) : isPending ? (
+                ) : loading ? (
                   <Skeleton className="h-10 w-32" />
                 ) : (
                   <div className="flex items-center gap-2">
                     <Link href="/auth/sign-in">
                       <Button size="sm" variant="ghost">
-                        Log in
+                        Войти
                       </Button>
                     </Link>
                     <Link href="/auth/sign-up">
-                      <Button size="sm">Sign up</Button>
+                      <Button size="sm">Регистрация</Button>
                     </Link>
                   </div>
                 )}
               </div>
             )}
 
-            {!isDashboard &&
-              (isPending ? (
-                <Skeleton className={`h-9 w-9 rounded-full`} />
-              ) : (
-                <ThemeToggle />
-              ))}
-
-            {/* Mobile menu button */}
             <Button
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -187,61 +154,65 @@ export function Header({ showAuth = true }: HeaderProps) {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden">
-          <div className="space-y-1 border-b px-4 py-3">
-            {isPending
-              ? Array.from({ length: navigation.length }).map((_, i) => (
-                  <div className="py-2" key={i}>
-                    <Skeleton className="h-6 w-32" />
-                  </div>
-                ))
-              : navigation.map((item) => {
-                  const isActive =
-                    pathname === item.href ||
-                    (item.href !== "/" && pathname?.startsWith(item.href));
+          <div className="space-y-1 px-4 pb-3 pt-2">
+            {navigation.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname?.startsWith(item.href));
 
-                  return (
-                    <Link
-                      className={cn(
-                        "block rounded-md px-3 py-2 text-base font-medium",
-                        isActive
-                          ? "bg-primary/10 text-primary"
-                          : `
-                            text-foreground
-                            hover:bg-muted/50 hover:text-primary
-                          `,
-                      )}
-                      href={item.href}
-                      key={item.name}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  );
-                })}
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "block rounded-md px-3 py-2 text-base font-medium",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
+
+          {showAuth && user && (
+            <div className="border-t px-4 py-3">
+              <div className="flex items-center">
+                <div>
+                  <div className="text-base font-medium text-foreground">
+                    {user.firstName} {user.lastName}
+                  </div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    {user.email}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {showAuth && !user && (
             <div className="space-y-1 border-b px-4 py-3">
               <Link
-                className={`
-                  block rounded-md px-3 py-2 text-base font-medium
-                  hover:bg-muted/50
-                `}
+                className={cn(
+                  "block rounded-md px-3 py-2 text-base font-medium hover:bg-muted/50"
+                )}
                 href="/auth/sign-in"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Log in
+                Войти
               </Link>
               <Link
-                className={`
-                  block rounded-md bg-primary px-3 py-2 text-base font-medium
-                  text-primary-foreground
-                  hover:bg-primary/90
-                `}
+                className={cn(
+                  "block rounded-md bg-primary px-3 py-2 text-base font-medium",
+                  "text-primary-foreground hover:bg-primary/90"
+                )}
                 href="/auth/sign-up"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Sign up
+                Регистрация
               </Link>
             </div>
           )}
@@ -249,6 +220,23 @@ export function Header({ showAuth = true }: HeaderProps) {
       )}
     </header>
   );
+
+  if (loading) {
+    return (
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <Skeleton className="h-8 w-32" />
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
 
   return renderContent();
 }

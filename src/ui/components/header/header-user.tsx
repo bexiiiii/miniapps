@@ -5,6 +5,7 @@ import {
   Shield,
   Upload,
   UserIcon,
+  Package,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -89,33 +90,15 @@ export function HeaderUserDropdown({
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link className="cursor-pointer" href="/dashboard/stats">
+          <Link className="cursor-pointer" href="/orders">
+            <Package className="mr-2 h-4 w-4" />
+            История заказов
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link className="cursor-pointer" href="/products">
             <BarChart className="mr-2 h-4 w-4" />
-            Stats
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link className="cursor-pointer" href="/dashboard/profile">
-            <UserIcon className="mr-2 h-4 w-4" />
-            Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link className="cursor-pointer" href="/dashboard/settings">
-            <Settings className="mr-2 h-4 w-4" />
-            Settings
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link className="cursor-pointer" href="/dashboard/uploads">
-            <Upload className="mr-2 h-4 w-4" />
-            Uploads
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link className="cursor-pointer" href="/admin/summary">
-            <Shield className="mr-2 h-4 w-4" />
-            Admin
+            Боксы
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

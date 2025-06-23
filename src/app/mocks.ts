@@ -49,6 +49,12 @@ export const featuredProductsHomepage = [
 export const categories = [
   {
     image:
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    name: "All Products",
+    productCount: 45,
+  },
+  {
+    image:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
     name: "Audio",
     productCount: 12,
@@ -79,45 +85,45 @@ export const testimonials = [
     author: {
       avatar:
         "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
-      handle: "@sarahtechie",
-      name: "Sarah Johnson",
+      handle: "@aynur.ast",
+      name: "Айнур Сагинова",
     },
-    text: "Honestly, I don't even remember how many times I've ordered from here. Never once had a bad experience. Stuff just works, and when I had a question, support was on it in like, five minutes.",
+    text: "«Честно, сначала сомневалась. Но бокс из пекарни оказался 🔥 — свежая выпечка, как утром. Теперь беру почти каждый день после учёбы.",
   },
   {
     author: {
       avatar:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-      handle: "@mikedev",
-      name: "Michael Chen",
+      handle: "@maxvkusno",
+      name: "Максим Ильясов",
     },
-    text: "Wasn't expecting much tbh, but ended up being super impressed. Got a keyboard that feels chef's kiss and arrived faster than other stores. No complaints.",
+    text: "«Крутая идея! Брал бокс в кофейне возле офиса — за 990 тг получил кофе, круассан и чизкейк. Почти даром.»",
   },
   {
     author: {
       avatar:
         "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
-      handle: "@emdigital",
-      name: "Emily Rodriguez",
+      handle: "@zhanya.food",
+      name: "Жания Талгатова",
     },
-    text: "I was totally lost picking a laptop for freelance work. Dropped them a message and got a thoughtful reply within the hour. They didn't push the priciest option either, which I respect. Love what I got.",
+    text: "«Очень вежная поддержка! Написала в телегу, сразу ответили. Помогли с адресом заведения, всё быстро и без нервов.»",
   },
   {
     author: {
       avatar:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
-      handle: "@davidtech",
-      name: "David Park",
+      handle: "@igor.kz",
+      name: "Игорь Ким",
     },
-    text: "Site's clean, checkout was quick, and my order showed up two days early. Which never happens. Already eyeing my next upgrade 👀",
+    text: "«Оформил заказ за 30 секунд, забрал по пути домой. Сэкономил кучу денег. Надоели обычные магазины — теперь только тут.»",
   },
   {
     author: {
       avatar:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
-      handle: "@sophiareviews",
-      name: "Sophia Martinez",
+      handle: "@aru.student",
+      name: "Аружан Бекетова",
     },
-    text: "Finally. A tech store that doesn't make me feel dumb. Everything's explained in plain English, and their chat team didn't treat me like I was annoying them. 10/10.",
+    text: "«Спасибо, что делаете такую штуку! Когда бюджет поджимает — реально спасает. И это не просрочка, еда топовая.»",
   },
 ];

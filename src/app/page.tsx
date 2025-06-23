@@ -1,7 +1,11 @@
-import { ArrowRight, Clock, ShoppingBag, Star, Truck } from "lucide-react";
+"use client";
+
+import { ArrowRight, Clock, ShoppingBag, Star, Truck, Users, MessageCircle, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+import { apiClient, type Product, type Category } from "~/lib/api-client";
 import United24Banner from "~/ui/components/banners/u24";
 import { HeroBadge } from "~/ui/components/hero-badge";
 import { ProductCard } from "~/ui/components/product-card";
@@ -14,37 +18,125 @@ import {
   CardHeader,
   CardTitle,
 } from "~/ui/primitives/card";
+import { Skeleton } from "~/ui/primitives/skeleton";
+import { SEOStructuredData, LocalBusinessStructuredData } from "~/ui/components/seo-structured-data";
 
-import { categories, featuredProductsHomepage, testimonials } from "./mocks";
+import { testimonials } from "./mocks";
 
 const featuresWhyChooseUs = [
   {
     description:
-      "Free shipping on all orders over $50. Fast and reliable delivery to your doorstep.",
+      "Забирай заказ в удобное время — без очередей и ожидания.",
     icon: <Truck className="h-6 w-6 text-primary" />,
-    title: "Free Shipping",
+    title: "Удобный самовывоз",
   },
   {
     description:
-      "Your payment information is always safe and secure with us. We use industry-leading encryption.",
+      "Твои данные защищены. Оплата проходит через надёжные сервисы.",
     icon: <ShoppingBag className="h-6 w-6 text-primary" />,
-    title: "Secure Checkout",
+    title: "Безопасная оплата",
   },
   {
     description:
-      "Our customer support team is always available to help with any questions or concerns.",
+      "Есть вопрос? Напиши в WhatsApp или Telegram — ответим быстро.",
     icon: <Clock className="h-6 w-6 text-primary" />,
-    title: "24/7 Support",
+    title: "24/7 Поддержка клиентов",
   },
   {
     description:
-      "We stand behind the quality of every product we sell. 30-day money-back guarantee.",
+      "Мы работаем только с проверенными кафе и пекарнями. Еда всегда свежая.",
     icon: <Star className="h-6 w-6 text-primary" />,
-    title: "Quality Guarantee",
+    title: "Гарантия качества",
   },
 ];
 
 export default function HomePage() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await apiClient.getFeaturedProducts(0, 4);
+        setFeaturedProducts(response.content);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+        setFeaturedProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await apiClient.getCategories();
+        // Use backend-provided images or fallback to defaults
+        const mappedCategories: Category[] = categoriesData.map((category) => ({
+          ...category,
+          imageUrl: category.imageUrl || getCategoryImage(category.name)
+        }));
+        setCategories(mappedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Fallback to mock categories if API fails
+        const { categories: mockCategories } = await import('./mocks');
+        const mappedMockCategories: Category[] = mockCategories.map((category, index) => ({
+          id: index + 1,
+          name: category.name,
+          description: `${category.productCount} items available`,
+          imageUrl: category.image,
+          active: true,
+        }));
+        setCategories(mappedMockCategories);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Helper function to get category images
+  const getCategoryImage = (categoryName: string): string => {
+    const categoryImages: Record<string, string> = {
+      // Tech categories
+      'All Products': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&auto=format&fit=crop&q=60',
+      'Audio': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60',
+      'Wearables': 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=60',
+      'Smartphones': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=60',
+      'Laptops': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=60',
+      // Food categories (fallback)
+      'Пекарня': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format&fit=crop&q=60',
+      'Кофейня': 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&auto=format&fit=crop&q=60',
+      'Ресторан': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&auto=format&fit=crop&q=60',
+      'Супермаркет': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=60',
+      'Фастфуд': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800&auto=format&fit=crop&q=60',
+      'Десерты': 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop&q=60',
+      'Мясо': 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&auto=format&fit=crop&q=60',
+      'Овощи': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=60',
+    };
+    
+    return categoryImages[categoryName] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=60';
+  };
+
+  // Convert API product to component format
+  const convertProduct = (product: Product) => ({
+    id: product.id.toString(),
+    name: product.name,
+    price: product.price,
+    originalPrice: product.originalPrice,
+    image: product.imageUrl,
+    category: product.category,
+    rating: product.rating,
+    inStock: product.isAvailable,
+  });
+
   return (
     <>
       <main
@@ -92,14 +184,14 @@ export default function HomePage() {
                       lg:leading-[1.1]
                     `}
                   >
-                    Your One-Stop Shop for{" "}
+                    Еда со скидкой до 50% —  {" "}
                     <span
                       className={`
                         bg-gradient-to-r from-primary to-primary/70 bg-clip-text
                         text-transparent
                       `}
                     >
-                      Everything Tech
+                      рядом с вами
                     </span>
                   </h1>
                   <p
@@ -108,8 +200,7 @@ export default function HomePage() {
                       md:text-xl
                     `}
                   >
-                    Discover premium products at competitive prices, with fast
-                    shipping and exceptional customer service.
+                   FoodSave помогает найти вкусную еду от кафе, пекарен и магазинов, которую не успели продать.
                   </p>
                 </div>
                 <div
@@ -145,11 +236,11 @@ export default function HomePage() {
                 >
                   <div className="flex items-center gap-1.5">
                     <Truck className="h-5 w-5 text-primary/70" />
-                    <span>Free shipping over $50</span>
+                    <span>Забирай заказ без доставки — быстро и бесплатно</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-5 w-5 text-primary/70" />
-                    <span>24/7 Customer Support</span>
+                    <span>Поддержка 24/7</span>
                   </div>
                 </div>
               </div>
@@ -210,56 +301,83 @@ export default function HomePage() {
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
-                Find the perfect device for your needs from our curated
-                collections
+                Discover products across all categories - from tech gadgets to everyday essentials
               </p>
             </div>
             <div
               className={`
                 grid grid-cols-2 gap-4
-                md:grid-cols-4 md:gap-6
+                sm:grid-cols-3
+                md:grid-cols-5 md:gap-6
               `}
             >
-              {categories.map((category) => (
-                <Link
-                  aria-label={`Browse ${category.name} products`}
-                  className={`
-                    group relative flex flex-col space-y-4 overflow-hidden
-                    rounded-2xl border bg-card shadow transition-all
-                    duration-300
-                    hover:shadow-lg
-                  `}
-                  href={`/products?category=${category.name.toLowerCase()}`}
-                  key={category.name}
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <div
-                      className={`
-                        absolute inset-0 z-10 bg-gradient-to-t
-                        from-background/80 to-transparent
-                      `}
-                    />
-                    <Image
-                      alt={category.name}
-                      className={`
-                        object-cover transition duration-300
-                        group-hover:scale-105
-                      `}
-                      fill
-                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
-                      src={category.image}
-                    />
-                  </div>
-                  <div className="relative z-20 -mt-6 p-4">
-                    <div className="mb-1 text-lg font-medium">
-                      {category.name}
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {category.productCount} products
-                    </p>
-                  </div>
-                </Link>
-              ))}
+              {categoriesLoading
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <Card key={i} className="overflow-hidden">
+                      <CardContent className="p-0">
+                        <Skeleton className="aspect-square w-full" />
+                        <div className="p-3">
+                          <Skeleton className="h-4 w-3/4" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                : categories.map((category) => {
+                    const isAllProducts = category.name === 'All Products';
+                    return (
+                      <Link
+                        aria-label={`Browse ${category.name} products`}
+                        className={`
+                          group relative flex flex-col overflow-hidden
+                          rounded-lg border bg-card shadow transition-all
+                          duration-300
+                          hover:shadow-md hover:scale-105
+                          ${isAllProducts ? 'md:col-span-2 md:row-span-1' : ''}
+                        `}
+                        href={`/products${category.name === 'All Products' ? '' : `?category=${encodeURIComponent(category.name)}`}`}
+                        key={category.id}
+                      >
+                        <div className={`relative overflow-hidden ${isAllProducts ? 'aspect-[2/1]' : 'aspect-square'}`}>
+                          <div
+                            className={`
+                              absolute inset-0 z-10 bg-gradient-to-t
+                              from-background/70 to-transparent
+                              ${isAllProducts ? 'from-primary/20 to-transparent' : ''}
+                            `}
+                          />
+                          <Image
+                            alt={category.name}
+                            className={`
+                              object-cover transition duration-300
+                              group-hover:scale-110
+                            `}
+                            fill
+                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 20vw, 16vw"
+                            src={category.imageUrl || '/placeholder.svg'}
+                          />
+                          {isAllProducts && (
+                            <div className="absolute inset-0 z-20 flex items-center justify-center">
+                              <div className="text-center text-white">
+                                <div className="text-lg font-bold mb-1">🛍️</div>
+                                <div className="text-sm font-semibold">View All</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="relative z-20 p-3">
+                          <div className={`text-sm font-medium text-center line-clamp-2 ${isAllProducts ? 'text-primary' : ''}`}>
+                            {category.name}
+                          </div>
+                          {category.description && (
+                            <p className="text-xs text-muted-foreground text-center mt-1 line-clamp-1">
+                              {category.description}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    );
+                  })
+              }
             </div>
           </div>
         </section>
@@ -285,11 +403,11 @@ export default function HomePage() {
                   md:text-4xl
                 `}
               >
-                Featured Products
+                Самое вкусное сейчас
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
-                Check out our latest and most popular tech items
+                 Боксы, которые выбирают чаще всего
               </p>
             </div>
             <div
@@ -300,14 +418,25 @@ export default function HomePage() {
                 xl:grid-cols-4
               `}
             >
-              {featuredProductsHomepage.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+              {loading
+                ? Array.from({ length: 4 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardContent className="p-4">
+                        <Skeleton className="aspect-square w-full mb-4" />
+                        <Skeleton className="h-4 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </CardContent>
+                    </Card>
+                  ))
+                : featuredProducts.map((product: Product) => (
+                    <ProductCard key={product.id} product={convertProduct(product)} />
+                  ))
+              }
             </div>
             <div className="mt-10 flex justify-center">
               <Link href="/products">
                 <Button className="group h-12 px-8" size="lg" variant="outline">
-                  View All Products
+                  Смотреть все боксы
                   <ArrowRight
                     className={`
                       ml-2 h-4 w-4 transition-transform duration-300
@@ -316,6 +445,112 @@ export default function HomePage() {
                   />
                 </Button>
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* B2B Section */}
+        <section
+          className={`
+            py-12
+            md:py-16
+          `}
+        >
+          <div
+            className={`
+              container mx-auto max-w-7xl px-4
+              sm:px-6
+              lg:px-8
+            `}
+          >
+            <div className="mb-8 flex flex-col items-center text-center">
+              <h2
+                className={`
+                  font-display text-3xl leading-tight font-bold tracking-tight
+                  sm:text-4xl
+                  lg:text-5xl
+                `}
+              >
+                Для бизнес-клиентов
+              </h2>
+              <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
+              <p className="mt-4 max-w-2xl text-center text-muted-foreground">
+                Оптовые поставки продуктов со скидкой для ресторанов, кафе и магазинов
+              </p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-3 mb-12">
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <ShoppingBag className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Оптовые цены</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Скидки до 70% на большие объемы продукции
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Truck className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Доставка</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Бесплатная доставка от 50,000 ₸
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Персональный менеджер</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Индивидуальный подход к каждому клиенту
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="text-center">
+              <p className="mb-6 text-muted-foreground">
+                Свяжитесь с нами для обсуждения условий сотрудничества
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="https://t.me/foodsave_b2b"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`
+                    inline-flex items-center justify-center gap-2 rounded-lg
+                    border border-border bg-background px-6 py-3 text-sm font-medium
+                    transition-all duration-200 hover:bg-accent hover:text-accent-foreground
+                    hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                  `}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Telegram
+                </a>
+                <a
+                  href="https://wa.me/77771234567?text=Здравствуйте! Интересует сотрудничество по программе B2B"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`
+                    inline-flex items-center justify-center gap-2 rounded-lg
+                    bg-primary px-6 py-3 text-sm font-medium text-primary-foreground
+                    transition-all duration-200 hover:bg-primary/90 hover:shadow-md
+                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+                  `}
+                >
+                  <Phone className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -342,7 +577,7 @@ export default function HomePage() {
                   md:text-4xl
                 `}
               >
-                Why Choose Us
+                Почему выбирают FoodSave
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
               <p
@@ -351,7 +586,7 @@ export default function HomePage() {
                   md:text-lg
                 `}
               >
-                We offer the best shopping experience with premium features
+                Мы делаем экономию вкусной, быстрой и удобной — каждый день.
               </p>
             </div>
             <div
@@ -408,9 +643,9 @@ export default function HomePage() {
           >
             <TestimonialsSection
               className="py-0"
-              description="Don't just take our word for it - hear from our satisfied customers"
+              description="Не только мы — послушайте тех, кто уже экономит и ест вкусно с FoodSave."
               testimonials={testimonials}
-              title="What Our Customers Say"
+              title="Что говорят наши пользователи"
             />
           </div>
         </section>
@@ -448,7 +683,7 @@ export default function HomePage() {
                     md:text-4xl
                   `}
                 >
-                  Ready to Upgrade Your Tech?
+                   Готовы попробовать FoodSave?
                 </h2>
                 <p
                   className={`
@@ -456,9 +691,7 @@ export default function HomePage() {
                     md:text-xl
                   `}
                 >
-                  Join thousands of satisfied customers and experience the best
-                  tech products on the market. Sign up today for exclusive deals
-                  and offers.
+                  Присоединяйся к тем, кто уже получает свежие блюда со скидкой до 50%. Бронируй боксы рядом — пока не расхватали.
                 </p>
                 <div
                   className={`
@@ -471,7 +704,7 @@ export default function HomePage() {
                       className="h-12 px-8 transition-colors duration-200"
                       size="lg"
                     >
-                      Sign Up Now
+                      Зарегистрироваться
                     </Button>
                   </Link>
                   <Link href="/products">
@@ -480,7 +713,7 @@ export default function HomePage() {
                       size="lg"
                       variant="outline"
                     >
-                      Browse Products
+                      Посмотреть боксы
                     </Button>
                   </Link>
                 </div>
@@ -491,6 +724,10 @@ export default function HomePage() {
 
         {/* Sample banner */}
         <United24Banner animateGradient={false} />
+        
+        {/* SEO Structured Data */}
+        <SEOStructuredData type="website" />
+        <LocalBusinessStructuredData />
       </main>
     </>
   );

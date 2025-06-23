@@ -180,6 +180,7 @@ const United24Banner: React.FC<United24BannerProps> = ({
               `}
               height={48}
               priority
+              sizes="96px"
               src="/u24.svg"
               width={96}
             />
@@ -191,33 +192,12 @@ const United24Banner: React.FC<United24BannerProps> = ({
               `}
               height={48}
               priority
+              sizes="96px"
               src="/u24_white.svg"
               width={96}
             />
           </div>
-          <p
-            className={`
-              banner-content text-center text-base font-semibold
-              md:text-left
-              ${textColorClasses}
-            `}
-          >
-            Stand with Ukraine. Help fund drones, medkits, and victory. Every
-            dollar helps stop{" "}
-            <Link
-              className={`
-                underline underline-offset-4 transition-colors duration-200
-                hover:text-[#0057b7]
-                dark:hover:text-[#ffd700]
-              `}
-              href="https://war.ukraine.ua/russia-war-crimes"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              russia's war crimes
-            </Link>{" "}
-            and saves lives. Donate now, it matters.
-          </p>
+          
         </div>
 
         <div

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { SignOutPageClient } from "~/app/auth/sign-out/[[...signout]]/page.client";
-import { getCurrentUserOrRedirect } from "~/lib/auth";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -17,15 +16,13 @@ export const metadata: Metadata = {
   title: "Sign out",
 };
 
-export default async function SignOutPage() {
-  await getCurrentUserOrRedirect();
-
+export default function SignOutPage() {
   return (
     <Shell>
       <PageHeader>
-        <PageHeaderHeading>Sign out</PageHeaderHeading>
+        <PageHeaderHeading>Выйти из аккаунта</PageHeaderHeading>
         <PageHeaderDescription>
-          Are you sure you want to sign out?
+          Вы уверены, что хотите выйти из аккаунта?
         </PageHeaderDescription>
       </PageHeader>
       <SignOutPageClient />

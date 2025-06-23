@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-import { signOut } from "~/lib/auth-client";
+import { useAuth } from "~/lib/auth-context";
 import { cn } from "~/lib/cn";
 import { useMounted } from "~/lib/hooks/use-mounted";
 import { Button, buttonVariants } from "~/ui/primitives/button";
@@ -10,6 +11,7 @@ import { Skeleton } from "~/ui/primitives/skeleton";
 
 export function SignOutPageClient() {
   const router = useRouter();
+  const { logout } = useAuth();
   const mounted = useMounted();
 
   const handlePageBack = async () => {
@@ -17,13 +19,14 @@ export function SignOutPageClient() {
   };
 
   const handleSignOut = async () => {
-    await signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-        },
-      },
-    });
+    try {
+      await logout();
+      toast.success("Вы успешно вышли из аккаунта");
+      router.push("/");
+    } catch (error) {
+      toast.error("Ошибка при выходе из аккаунта");
+      console.error(error);
+    }
   };
 
   return (
@@ -34,14 +37,14 @@ export function SignOutPageClient() {
       `}
     >
       <Button onClick={handlePageBack} size="default" variant="outline">
-        Go back
-        <span className="sr-only">Previous page</span>
+        Назад
+        <span className="sr-only">Предыдущая страница</span>
       </Button>
       {mounted ? (
         <Button onClick={handleSignOut} size="default" variant="secondary">
-          Log out
+          Выйти
           <span className="sr-only">
-            This action will log you out of your account.
+            Это действие выведет вас из аккаунта.
           </span>
         </Button>
       ) : (

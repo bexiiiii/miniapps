@@ -1,0 +1,46 @@
+# Robots.txt for FoodSave
+User-agent: *
+Allow: /
+
+# High-value pages
+Allow: /
+Allow: /products/*
+Allow: /categories/*
+Allow: /about
+Allow: /contact
+Allow: /blog/*
+Allow: /careers
+
+# Block admin and auth pages
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /orders/
+Disallow: /cart/
+
+# Block temp and test files
+Disallow: /_next/
+Disallow: /temp/
+Disallow: *.json$
+Disallow: /test/
+
+# Allow essential files
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /sitemap.xml
+Allow: /site.webmanifest
+
+# Crawl delay for heavy crawlers
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: AhrefsBot  
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://foodsave.kz/sitemap.xml
