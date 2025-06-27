@@ -207,8 +207,8 @@ export function CartBackendProvider({ children }: React.PropsWithChildren) {
         setConvertedItems([]);
       }
     } catch (err) {
-      console.error('Error updating item quantity:', err);
-      setError(err instanceof Error ? err.message : 'Failed to update item quantity');
+      console.error('Error updating cart item:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update cart item');
     } finally {
       setLoading(false);
     }
@@ -224,9 +224,8 @@ export function CartBackendProvider({ children }: React.PropsWithChildren) {
     setError(null);
 
     try {
-      await apiClient.clearCart();
-      setCart(null);
-      setConvertedItems([]);
+      const clearedCart = await apiClient.clearCart();
+      setCart(clearedCart);
     } catch (err) {
       console.error('Error clearing cart:', err);
       setError(err instanceof Error ? err.message : 'Failed to clear cart');
@@ -249,35 +248,34 @@ export function CartBackendProvider({ children }: React.PropsWithChildren) {
   );
 
   /* ----------------------------- Context value -------------------------- */
-  const contextValue: CartContextType = React.useMemo(() => ({
-    addItem,
-    clearCart,
-    itemCount,
-    items,
-    removeItem,
-    subtotal,
-    updateQuantity,
-    loading,
-    error,
-    refreshCart,
-  }), [
-    addItem,
-    clearCart,
-    itemCount,
-    items,
-    removeItem,
-    subtotal,
-    updateQuantity,
-    loading,
-    error,
-    refreshCart,
-  ]);
-
-  return (
-    <CartContext.Provider value={contextValue}>
-      {children}
-    </CartContext.Provider>
+  const value = React.useMemo<CartContextType>(
+    () => ({
+      addItem,
+      clearCart,
+      itemCount,
+      items,
+      removeItem,
+      subtotal,
+      updateQuantity,
+      loading,
+      error,
+      refreshCart,
+    }),
+    [
+      addItem,
+      clearCart,
+      itemCount,
+      items,
+      removeItem,
+      subtotal,
+      updateQuantity,
+      loading,
+      error,
+      refreshCart,
+    ],
   );
+
+  return <CartContext value={value}>{children}</CartContext>;
 }
 
 /* -------------------------------------------------------------------------- */

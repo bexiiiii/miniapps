@@ -9,6 +9,7 @@ import { apiClient, type Product, type Category } from "~/lib/api-client";
 import United24Banner from "~/ui/components/banners/u24";
 import { HeroBadge } from "~/ui/components/hero-badge";
 import { ProductCard } from "~/ui/components/product-card";
+import { PartnersTestimonialStyle } from "~/ui/components/partners-testimonial-style";
 import { TestimonialsSection } from "~/ui/components/testimonials/testimonials-with-marquee";
 import { Button } from "~/ui/primitives/button";
 import {
@@ -178,7 +179,7 @@ export default function HomePage() {
                   <h1
                     className={`
                       font-display text-4xl leading-tight font-bold
-                      tracking-tight text-foreground
+                      tracking-tight text-lime-500
                       sm:text-5xl
                       md:text-6xl
                       lg:leading-[1.1]
@@ -188,7 +189,7 @@ export default function HomePage() {
                     <span
                       className={`
                         bg-gradient-to-r from-primary to-primary/70 bg-clip-text
-                        text-transparent
+                        text-lime-500
                       `}
                     >
                       рядом с вами
@@ -212,22 +213,14 @@ export default function HomePage() {
                   <Link href="/products">
                     <Button
                       className={`
-                        h-12 gap-1.5 px-8 transition-colors duration-200
+                        h-12 gap-1.5 px-8 transition-colors duration-200 bg-lime-500
                       `}
                       size="lg"
-                    >
-                      Shop Now <ArrowRight className="h-4 w-4" />
+                    > 
+                      Купить сейчас <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
-                  <Link href="/showcase">
-                    <Button
-                      className="h-12 px-8 transition-colors duration-200"
-                      size="lg"
-                      variant="outline"
-                    >
-                      View Showcase
-                    </Button>
-                  </Link>
+                  
                 </div>
                 <div
                   className={`
@@ -263,7 +256,7 @@ export default function HomePage() {
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  src="https://images.unsplash.com/photo-1624767735494-1929dc24ad43?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+                  src="https://res.cloudinary.com/dqvqvbwft/image/upload/v1750963958/IMG_5674_lwgmwq.jpg"
                 />
               </div>
             </div>
@@ -293,13 +286,13 @@ export default function HomePage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <h2
                 className={`
-                  font-display text-3xl leading-tight font-bold tracking-tight
+                  font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
                   md:text-4xl
                 `}
               >
-                Shop by Category
+                Популярные категории
               </h2>
-              <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
+              <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
                 Discover products across all categories - from tech gadgets to everyday essentials
               </p>
@@ -399,13 +392,13 @@ export default function HomePage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <h2
                 className={`
-                  font-display text-3xl leading-tight font-bold tracking-tight
+                  font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
                   md:text-4xl
                 `}
               >
                 Самое вкусное сейчас
               </h2>
-              <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
+              <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
                  Боксы, которые выбирают чаще всего
               </p>
@@ -435,12 +428,12 @@ export default function HomePage() {
             </div>
             <div className="mt-10 flex justify-center">
               <Link href="/products">
-                <Button className="group h-12 px-8" size="lg" variant="outline">
+                <Button className="group h-12 px-8 bg-lime-500 text-white" size="lg" variant="outline" >
                   Смотреть все боксы
                   <ArrowRight
                     className={`
                       ml-2 h-4 w-4 transition-transform duration-300
-                      group-hover:translate-x-1
+                      group-hover:translate-x-1 
                     `}
                   />
                 </Button>
@@ -466,14 +459,14 @@ export default function HomePage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <h2
                 className={`
-                  font-display text-3xl leading-tight font-bold tracking-tight
+                  font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
                   sm:text-4xl
                   lg:text-5xl
                 `}
               >
                 Для бизнес-клиентов
               </h2>
-              <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
+              <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
                 Оптовые поставки продуктов со скидкой для ресторанов, кафе и магазинов
               </p>
@@ -482,10 +475,10 @@ export default function HomePage() {
             <div className="grid gap-6 md:grid-cols-3 mb-12">
               <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
                     <ShoppingBag className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Оптовые цены</h3>
+                  <h3 className="font-semibold text-lg mb-2">Лучшое предложение</h3>
                   <p className="text-sm text-muted-foreground">
                     Скидки до 70% на большие объемы продукции
                   </p>
@@ -494,10 +487,10 @@ export default function HomePage() {
               
               <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
                     <Truck className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Доставка</h3>
+                  <h3 className="font-semibold text-lg mb-2">Самовызов</h3>
                   <p className="text-sm text-muted-foreground">
                     Бесплатная доставка от 50,000 ₸
                   </p>
@@ -506,7 +499,7 @@ export default function HomePage() {
               
               <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold text-lg mb-2">Персональный менеджер</h3>
@@ -528,7 +521,7 @@ export default function HomePage() {
                   rel="noopener noreferrer"
                   className={`
                     inline-flex items-center justify-center gap-2 rounded-lg
-                    border border-border bg-background px-6 py-3 text-sm font-medium
+                    border border-border bg-backgroud px-6 py-3 text-sm font-medium
                     transition-all duration-200 hover:bg-accent hover:text-accent-foreground
                     hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                   `}
@@ -542,7 +535,7 @@ export default function HomePage() {
                   rel="noopener noreferrer"
                   className={`
                     inline-flex items-center justify-center gap-2 rounded-lg
-                    bg-primary px-6 py-3 text-sm font-medium text-primary-foreground
+                    bg-lime-500 px-6 py-3 text-sm font-medium text-primary-foreground
                     transition-all duration-200 hover:bg-primary/90 hover:shadow-md
                     focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
                   `}
@@ -573,13 +566,13 @@ export default function HomePage() {
             <div className="mb-8 flex flex-col items-center text-center">
               <h2
                 className={`
-                  font-display text-3xl leading-tight font-bold tracking-tight
+                  font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
                   md:text-4xl
                 `}
               >
                 Почему выбирают FoodSave
               </h2>
-              <div className="mt-2 h-1 w-12 rounded-full bg-primary" />
+              <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p
                 className={`
                   mt-4 max-w-2xl text-center text-muted-foreground
@@ -609,7 +602,7 @@ export default function HomePage() {
                     <div
                       className={`
                         mb-3 flex h-12 w-12 items-center justify-center
-                        rounded-full bg-primary/10
+                        rounded-full bg-lime-500
                       `}
                     >
                       {feature.icon}
@@ -627,28 +620,16 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Partners Section */}
+        <PartnersTestimonialStyle />
+
         {/* Testimonials */}
-        <section
-          className={`
-            bg-muted/50 py-12
-            md:py-16
-          `}
-        >
-          <div
-            className={`
-              container mx-auto max-w-7xl px-4
-              sm:px-6
-              lg:px-8
-            `}
-          >
-            <TestimonialsSection
-              className="py-0"
-              description="Не только мы — послушайте тех, кто уже экономит и ест вкусно с FoodSave."
-              testimonials={testimonials}
-              title="Что говорят наши пользователи"
-            />
-          </div>
-        </section>
+        <TestimonialsSection
+          className="bg-muted/50 py-12 md:py-16"
+          description="Не только мы — послушайте тех, кто уже экономит и ест вкусно с FoodSave."
+          testimonials={testimonials}
+          title="Что говорят наши пользователи"
+        />
 
         {/* CTA Section */}
         <section
@@ -679,7 +660,7 @@ export default function HomePage() {
               <div className="relative z-10 mx-auto max-w-2xl text-center">
                 <h2
                   className={`
-                    font-display text-3xl leading-tight font-bold tracking-tight
+                    font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
                     md:text-4xl
                   `}
                 >
@@ -701,7 +682,7 @@ export default function HomePage() {
                 >
                   <Link href="/auth/sign-up">
                     <Button
-                      className="h-12 px-8 transition-colors duration-200"
+                      className="h-12 px-8 transition-colors duration-200 bg-lime-500"
                       size="lg"
                     >
                       Зарегистрироваться
@@ -722,8 +703,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Sample banner */}
-        <United24Banner animateGradient={false} />
+        
         
         {/* SEO Structured Data */}
         <SEOStructuredData type="website" />

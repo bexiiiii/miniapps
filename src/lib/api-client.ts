@@ -115,6 +115,18 @@ interface StoreInfo {
   logo?: string;
   openingHours?: string;
   closingHours?: string;
+  // Detailed working hours
+  workingHours?: {
+    monday?: { open: string; close: string; closed?: boolean };
+    tuesday?: { open: string; close: string; closed?: boolean };
+    wednesday?: { open: string; close: string; closed?: boolean };
+    thursday?: { open: string; close: string; closed?: boolean };
+    friday?: { open: string; close: string; closed?: boolean };
+    saturday?: { open: string; close: string; closed?: boolean };
+    sunday?: { open: string; close: string; closed?: boolean };
+  };
+  // Simplified working hours string (fallback)
+  workingHoursText?: string;
   latitude?: number;
   longitude?: number;
   category?: string;
@@ -505,6 +517,33 @@ class ApiClient {
     }
 
     return response.json() as Promise<Order[]>;
+  }
+
+  // User profile methods
+  async getUserProfile(): Promise<{
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    address?: string;
+    role: string;
+  }> {
+    const response = await this.fetchWithAuth('/users/profile');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch user profile');
+    }
+
+    return response.json() as Promise<{
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phone?: string;
+      address?: string;
+      role: string;
+    }>;
   }
 }
 

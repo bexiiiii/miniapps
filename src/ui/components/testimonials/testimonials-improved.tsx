@@ -9,7 +9,7 @@ import {
   TestimonialCard,
 } from "~/ui/primitives/testimonial";
 
-interface TestimonialsSectionProps {
+interface TestimonialsSectionImprovedProps {
   className?: string;
   description: string;
   testimonials: {
@@ -20,12 +20,12 @@ interface TestimonialsSectionProps {
   title: string;
 }
 
-export function TestimonialsSection({
+export function TestimonialsSectionImproved({
   className,
   description,
   testimonials,
   title,
-}: TestimonialsSectionProps) {
+}: TestimonialsSectionImprovedProps) {
   const marqueeRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<null | ReturnType<typeof animate>>(null);
   const isHoveredRef = useRef(false);
@@ -92,12 +92,12 @@ export function TestimonialsSection({
   return (
     <section
       className={cn(
-        "bg-background text-foreground w-full",
+        "bg-background text-foreground",
         "px-0 py-12 sm:py-24 md:py-32",
         className,
       )}
     >
-      <div className="w-full flex flex-col items-center gap-4 text-center sm:gap-16">
+      <div className="max-w-container mx-auto flex flex-col items-center gap-4 text-center sm:gap-16">
         <div className="flex flex-col items-center gap-4 px-4 sm:gap-8">
           <h2 className="max-w-[720px] text-3xl leading-tight font-semibold text-lime-500 sm:text-5xl sm:leading-tight">
             {title}
@@ -107,20 +107,21 @@ export function TestimonialsSection({
           </p>
         </div>
 
-        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-          <div className="flex flex-row overflow-hidden p-2 [gap:var(--gap)] [--gap:1rem]"
+        {/* Контейнер с закругленными краями */}
+        <div className="relative w-full max-w-6xl">
+          <div
+            className="flex flex-row overflow-hidden rounded-2xl p-2 [gap:var(--gap)] [--gap:1rem] bg-gradient-to-r from-transparent via-muted/20 to-transparent"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <div className="flex shrink-0 flex-row justify-around [gap:var(--gap)]"
+            <div
+              className="flex shrink-0 flex-row justify-around [gap:var(--gap)]"
               ref={marqueeRef}
               style={{ translate: "none" }}
             >
               {[...Array(4)].map((_, setIndex) =>
                 testimonials.map((testimonial, i) => (
                   <TestimonialCard
-                    // Using UUID or other unique identifier would be better here,
-                    // but for static content this is acceptable
                     key={`testimonial-${testimonial.author.name}-${setIndex}-${i}`}
                     {...testimonial}
                   />
@@ -129,9 +130,9 @@ export function TestimonialsSection({
             </div>
           </div>
 
-          {/* Аккуратные градиентные маски */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background to-transparent sm:w-32" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent sm:w-32" />
+          {/* Мягкие тени по краям вместо градиентов */}
+          <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background/80 to-transparent pointer-events-none rounded-l-2xl" />
+          <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background/80 to-transparent pointer-events-none rounded-r-2xl" />
         </div>
       </div>
     </section>

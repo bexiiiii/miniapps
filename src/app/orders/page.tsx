@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useAuth } from "~/lib/auth-context";
-import { apiClient, type Order as ApiOrder, type OrderItem as ApiOrderItem } from "~/lib/api-client";
+import { apiClient, type Order as ApiOrder, type OrderItem as ApiOrderItem, type StoreInfo } from "~/lib/api-client";
 import { Button } from "~/ui/primitives/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/primitives/card";
 import { Badge } from "~/ui/primitives/badge";
@@ -47,6 +47,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [qrCodes, setQrCodes] = useState<Record<string, string>>({});
+  const [storeInfoCache, setStoreInfoCache] = useState<Record<string, StoreInfo>>({});
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -58,6 +59,36 @@ export default function OrdersPage() {
     }
   }, [user, authLoading, router]);
 
+  // Function to get store information with caching
+  const getStoreInfo = async (storeId: number): Promise<{ name: string; address: string }> => {
+    const storeIdStr = storeId.toString();
+    
+    // Check cache first
+    if (storeInfoCache[storeIdStr]) {
+      const store = storeInfoCache[storeIdStr];
+      return { name: store.name, address: store.address };
+    }
+
+    try {
+      const storeInfo = await apiClient.getStoreById(storeId);
+      
+      // Update cache
+      setStoreInfoCache(prev => ({
+        ...prev,
+        [storeIdStr]: storeInfo
+      }));
+      
+      return { name: storeInfo.name, address: storeInfo.address };
+    } catch (error) {
+      console.warn(`Failed to fetch store info for store ${storeId}:`, error);
+      // Return default store info if API fails
+      return { 
+        name: "FoodSave Store", 
+        address: "г. Алматы, ул. Абая, 123" 
+      };
+    }
+  };
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -65,36 +96,67 @@ export default function OrdersPage() {
       // Try to get orders from API
       try {
         const apiOrders = await apiClient.getUserOrders();
-        const transformedOrders: Order[] = apiOrders.map((order: ApiOrder) => ({
-          id: order.id.toString(),
-          orderNumber: order.orderNumber || `ORD-${order.id}`,
-          status: order.status.toLowerCase(),
-          total: Number(order.total),
-          items: order.items.map((item: ApiOrderItem) => ({
-            id: item.id.toString(),
-            productId: item.productId.toString(),
-            productName: item.productName,
-            productImage: "/placeholder.svg", // API doesn't provide image
-            quantity: item.quantity,
-            unitPrice: Number(item.price),
-            totalPrice: Number(item.subtotal),
-            categoryName: undefined // API doesn't provide category name
-          })),
-          contactPhone: order.customerPhone || "+7 (999) 123-45-67",
-          paymentMethod: order.paymentMethod.toLowerCase(),
-          createdAt: order.createdAt,
-          deliveryNotes: order.comment,
-          userName: order.customerName,
-          userEmail: user?.email,
-          storeName: "FoodSave Store", // API doesn't provide store name
-          storeAddress: "ул. Примерная, 123" // API doesn't provide store address
-        }));
+        
+        // Transform orders with store information
+        const transformedOrders: Order[] = await Promise.all(
+          apiOrders.map(async (order: ApiOrder) => {
+            // Get store info dynamically from backend
+            // TODO: Update this when backend provides storeId in order response
+            // Currently using default store ID (1) for all orders
+            // In the future, check if order has storeId or if items contain storeId
+            let storeInfo = { name: "FoodSave Store", address: "г. Алматы, ул. Абая, 123" };
+            
+            try {
+              // Option 1: If order has storeId directly (when backend is updated)
+              // const storeId = (order as any).storeId;
+              
+              // Option 2: If items contain storeId (when backend is updated)
+              // const firstItem = order.items[0];
+              // const storeId = (firstItem as any).storeId;
+              
+              // For now, using default store ID. Replace with actual storeId when available.
+              const storeId = 1; // This should come from order or item data in the future
+              
+              storeInfo = await getStoreInfo(storeId);
+            } catch (error) {
+              console.warn("Failed to get store info for order", order.id, error);
+            }
+
+            return {
+              id: order.id.toString(),
+              orderNumber: order.orderNumber || `ORD-${order.id}`,
+              status: order.status.toLowerCase(),
+              total: Number(order.total),
+              items: order.items.map((item: ApiOrderItem) => ({
+                id: item.id.toString(),
+                productId: item.productId.toString(),
+                productName: item.productName,
+                productImage: "/placeholder.svg", // API doesn't provide image
+                quantity: item.quantity,
+                unitPrice: Number(item.price),
+                totalPrice: Number(item.subtotal),
+                categoryName: undefined // API doesn't provide category name
+              })),
+              contactPhone: order.customerPhone || user?.phone || "+7 (777) 123-45-67",
+              paymentMethod: order.paymentMethod.toLowerCase(),
+              createdAt: order.createdAt,
+              deliveryNotes: order.comment,
+              userName: order.customerName || user?.firstName + " " + user?.lastName,
+              userEmail: user?.email,
+              storeName: storeInfo.name,
+              storeAddress: storeInfo.address
+            };
+          })
+        );
         
         setOrders(transformedOrders);
       } catch (apiError) {
         console.warn("API not available, using mock data:", apiError);
         
         // Fallback to mock data if API is unavailable
+        // Get store info for mock data as well
+        const storeInfo = await getStoreInfo(1);
+        
         const mockOrders: Order[] = [
           {
             id: "1",
@@ -123,14 +185,14 @@ export default function OrdersPage() {
                 categoryName: "Фрукты"
               }
             ],
-            contactPhone: "+7 (999) 123-45-67",
+            contactPhone: user?.phone || "+7 (777) 123-45-67",
             paymentMethod: "card",
             createdAt: "2025-06-17T10:30:00Z",
             deliveryNotes: "Доставить до 18:00",
             userName: user?.firstName + " " + user?.lastName || "Пользователь",
             userEmail: user?.email,
-            storeName: "FoodSave Store",
-            storeAddress: "ул. Примерная, 123"
+            storeName: storeInfo.name,
+            storeAddress: storeInfo.address
           },
           {
             id: "2",
@@ -149,13 +211,13 @@ export default function OrdersPage() {
                 categoryName: "Мясо"
               }
             ],
-            contactPhone: "+7 (999) 123-45-67",
+            contactPhone: user?.phone || "+7 (777) 123-45-67",
             paymentMethod: "cash",
             createdAt: "2025-06-18T09:15:00Z",
             userName: user?.firstName + " " + user?.lastName || "Пользователь",
             userEmail: user?.email,
-            storeName: "FoodSave Store",
-            storeAddress: "ул. Примерная, 123"
+            storeName: storeInfo.name,
+            storeAddress: storeInfo.address
           }
         ];
         
@@ -357,7 +419,7 @@ export default function OrdersPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     {getStatusBadge(order.status)}
-                    <Badge variant="outline">{order.total} ₽</Badge>
+                    <Badge variant="outline">{order.total} ₸</Badge>
                   </div>
                 </div>
               </CardHeader>
@@ -405,7 +467,7 @@ export default function OrdersPage() {
                           <div>
                             <p className="font-medium">{item.productName}</p>
                             <p className="text-sm text-muted-foreground">
-                              {item.quantity} × {item.unitPrice} ₽
+                              {item.quantity} × {item.unitPrice} ₸
                             </p>
                             {item.categoryName && (
                               <p className="text-xs text-muted-foreground">
@@ -414,7 +476,7 @@ export default function OrdersPage() {
                             )}
                           </div>
                         </div>
-                        <p className="font-semibold">{item.totalPrice} ₽</p>
+                        <p className="font-semibold">{item.totalPrice} ₸</p>
                       </div>
                     ))}
                   </div>
@@ -453,7 +515,7 @@ export default function OrdersPage() {
                 {/* Order Total */}
                 <div className="flex justify-between items-center text-lg font-semibold">
                   <span>Итого:</span>
-                  <span>{order.total} ₽</span>
+                  <span>{order.total} ₸</span>
                 </div>
               </CardContent>
             </Card>

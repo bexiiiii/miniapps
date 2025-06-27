@@ -34,10 +34,11 @@ import {
 import { Skeleton } from "~/ui/primitives/skeleton";
 
 import { OrderReceipt } from "./order-receipt";
+import { OrderForm } from "./order-form";
 import { useAuth } from "~/lib/auth-context";
 
-// Beautiful OrderForm component with auto-filled user data and store info
-const OrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }: {
+// Remove the inline OrderForm component since we're using the one from order-form.tsx
+const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }: {
   subtotal: number;
   total: number;
   onSubmit: (data: any) => void;

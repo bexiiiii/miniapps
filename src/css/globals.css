@@ -177,3 +177,181 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+
+/* Partners carousel shadow effects */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Partners carousel gradient backgrounds */
+.partners-bg-gradient {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dbeafe 100%);
+}
+
+/* Glass morphism effect for partners carousel */
+.glass-morphism {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Subtle glow for partner cards */
+.partner-glow {
+  box-shadow: 
+    0 0 20px rgba(163, 230, 53, 0.1),
+    0 0 40px rgba(163, 230, 53, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.partner-glow:hover {
+  box-shadow: 
+    0 0 30px rgba(163, 230, 53, 0.2),
+    0 0 60px rgba(163, 230, 53, 0.1),
+    0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Smooth scroll behavior */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Custom gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced backdrop blur for modern browsers */
+@supports (backdrop-filter: blur(20px)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+}
+
+/* Partners carousel enhancements */
+.partners-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.partners-card-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 30px -12px rgba(132, 204, 22, 0.1);
+}
+
+/* Smooth animations for carousel navigation */
+.carousel-nav-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+.carousel-nav-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 15px -5px rgba(132, 204, 22, 0.1);
+}
+
+/* Enhanced styles for partners section with shadcn/ui integration */
+.partners-tooltip {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+}
+
+.partners-badge {
+  background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(168, 230, 49, 0.1) 100%);
+  border: 1px solid rgba(132, 204, 22, 0.2);
+  transition: all 0.3s ease;
+}
+
+.partners-badge:hover {
+  background: linear-gradient(135deg, rgba(132, 204, 22, 0.2) 0%, rgba(168, 230, 49, 0.2) 100%);
+  border-color: rgba(132, 204, 22, 0.4);
+  transform: scale(1.05);
+}
+
+.partners-stats-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.partners-stats-card:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+  border-color: rgba(132, 204, 22, 0.4);
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.1), 0 8px 25px -8px rgba(132, 204, 22, 0.15);
+}
+
+.partners-logo-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(249, 250, 251, 0.9) 100%);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.partners-logo-container:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(249, 250, 251, 1) 100%);
+  border-color: rgba(132, 204, 22, 0.5);
+  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.1), 0 6px 20px -8px rgba(132, 204, 22, 0.2);
+}
+
+/* Skeleton enhancements */
+.partners-skeleton {
+  background: linear-gradient(90deg, rgba(243, 244, 246, 0.8) 25%, rgba(229, 231, 235, 0.8) 50%, rgba(243, 244, 246, 0.8) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Pause indicator */
+.pause-indicator {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Rating star enhancement */
+.rating-star {
+  filter: drop-shadow(0 1px 2px rgba(251, 191, 36, 0.3));
+  transition: filter 0.2s ease;
+}
+
+.rating-star:hover {
+  filter: drop-shadow(0 2px 4px rgba(251, 191, 36, 0.5));
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .partners-logo-container,
+  .partners-stats-card,
+  .partners-badge {
+    transition: none;
+  }
+  
+  .partners-skeleton {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .partners-tooltip {
+    background: rgb(0, 0, 0);
+    border-color: rgb(132, 204, 22);
+  }
+  
+  .partners-logo-container {
+    border-color: rgb(0, 0, 0);
+  }
+}

@@ -108,7 +108,7 @@ export function Footer({ className }: { className?: string }) {
             </div>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Shop</h3>
+            <h3 className="mb-4 text-sm font-semibold">Категории</h3>
             <ul className="space-y-2 text-sm">
               {categories.map((category) => (
                 <li key={category.id}>
@@ -186,7 +186,7 @@ export function Footer({ className }: { className?: string }) {
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Company</h3>
+            <h3 className="mb-4 text-sm font-semibold">Компания</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -196,7 +196,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/about"
                 >
-                  About Us
+                  О нас
                 </Link>
               </li>
               <li>
@@ -221,7 +221,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/press"
                 >
-                  Press
+                  Пресса
                 </Link>
               </li>
               <li>
@@ -232,13 +232,13 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/contact"
                 >
-                  Contact
+                  Контакты
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Support</h3>
+            <h3 className="mb-4 text-sm font-semibold">Поддержка</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -248,7 +248,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/help"
                 >
-                  Help Center
+                  Центр Поддержки
                 </Link>
               </li>
               <li>
@@ -265,7 +265,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/privacy"
                 >
-                  Privacy Policy
+                  Политика конфиденциальности
                 </Link>
               </li>
               <li>
@@ -276,7 +276,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/terms"
                 >
-                  Terms of Service
+                  Политика использования
                 </Link>
               </li>
             </ul>
@@ -290,8 +290,7 @@ export function Footer({ className }: { className?: string }) {
             `}
           >
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} {SEO_CONFIG.name}. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} {SEO_CONFIG.name}. Все права защищены.
             </p>
             <div
               className={
@@ -299,10 +298,10 @@ export function Footer({ className }: { className?: string }) {
               }
             >
               <Link className="hover:text-foreground" href="/privacy">
-                Privacy
+                Политика конфиденциальности
               </Link>
               <Link className="hover:text-foreground" href="/terms">
-                Terms
+                Политика использования
               </Link>
             
               

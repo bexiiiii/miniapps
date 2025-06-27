@@ -14,6 +14,8 @@ export default {
       { hostname: "utfs.io", protocol: "https" },
       { hostname: "halaldamu.kz", protocol: "https" },
       { hostname: "localhost", protocol: "http" },
+      { hostname: "i.pinimg.com", protocol: "https" },
+      { hostname: "*", protocol: "https" },
     ],
   },
 } satisfies NextConfig;
