@@ -107,8 +107,9 @@ interface Cart {
 }
 
 interface StoreInfo {
-  id: string;
+  id: number;
   name: string;
+  description?: string;
   address: string;
   phone?: string;
   email?: string;
@@ -132,6 +133,9 @@ interface StoreInfo {
   category?: string;
   status?: string;
   active?: boolean;
+  rating?: number;
+  reviewCount?: number;
+  productCount?: number;
 }
 
 interface Category {
@@ -346,6 +350,16 @@ class ApiClient {
     return response.json() as Promise<PaginatedResponse<Product>>;
   }
 
+  async getProductsByStore(storeId: number, page: number = 0, size: number = 20): Promise<PaginatedResponse<Product>> {
+    const response = await this.fetchPublic(`/products/store/${storeId}?page=${page}&size=${size}`);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch products by store');
+    }
+
+    return response.json() as Promise<PaginatedResponse<Product>>;
+  }
+
   async getCategories(): Promise<Category[]> {
     const response = await this.fetchPublic('/categories/active');
     
@@ -440,7 +454,17 @@ class ApiClient {
   }
 
   // Store methods
-  async getStoreById(id: number): Promise<StoreInfo> {
+  async getAllStores(): Promise<StoreInfo[]> {
+    const response = await this.fetchPublic('/stores/active');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch stores');
+    }
+
+    return response.json() as Promise<StoreInfo[]>;
+  }
+
+  async getStoreById(id: number | string): Promise<StoreInfo> {
     const response = await this.fetchPublic(`/stores/${id}`);
     
     if (!response.ok) {

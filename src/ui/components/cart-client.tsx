@@ -151,13 +151,13 @@ export function CartClient({ className, mockCart }: CartProps) {
                 </p>
                 {isDesktop ? (
                   <SheetClose asChild>
-                    <Link href="/products">
+                    <Link href="/stores">
                       <Button>Посмотреть боксы</Button>
                     </Link>
                   </SheetClose>
                 ) : (
                   <DrawerClose asChild>
-                    <Link href="/products">
+                    <Link href="/stores">
                       <Button>Посмотреть боксы</Button>
                     </Link>
                   </DrawerClose>

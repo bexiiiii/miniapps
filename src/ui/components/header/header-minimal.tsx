@@ -10,9 +10,11 @@ interface HeaderProps {
 }
 
 export function Header({ showAuth = true }: HeaderProps) {
-  const mainNavigation = [
+  const navigation = [
     { href: "/", name: "Главная" },
-    { href: "/products", name: "Боксы" },
+    { href: "/stores", name: "Боксы" },
+    { href: "/business", name: "Для бизнеса" },
+    // { href: "/products", name: "Все продукты" },
   ];
 
   return (
@@ -37,7 +39,7 @@ export function Header({ showAuth = true }: HeaderProps) {
             </Link>
             <nav className={cn("hidden md:flex ml-8")}>
               <ul className="flex items-center gap-6">
-                {mainNavigation.map((item) => (
+                {navigation.map((item) => (
                   <li key={item.name}>
                     <Link
                       href={item.href}

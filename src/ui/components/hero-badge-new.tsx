@@ -13,7 +13,7 @@ export function HeroBadge() {
     >
       <div className="flex items-center gap-2">
         <span className="text-lg">🍱</span>
-        <span>Экономь до 50% на свежей еде</span>
+        <span>Экономь до 80% на свежей еде</span>
       </div>
     </Link>
   );

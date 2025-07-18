@@ -182,13 +182,14 @@ export function SignUpPageClient() {
                   <div className="flex-1">
                     <label htmlFor="acceptTerms" className="text-sm cursor-pointer">
                       <div className="font-medium text-amber-800 mb-1">
-                        ⚠️ Обязательное согласие с условиями
+                        
                       </div>
                       <div className="text-gray-700 text-xs leading-relaxed">
-                        Я понимаю и соглашаюсь с тем, что{" "}
-                        <strong>FoodSave не несет ответственности</strong> за качество, 
-                        безопасность продуктов питания и любые последствия их употребления 
-                        . Вся ответственность лежит на заведении-продавце.
+                        Я понимаю и соглашаюсь с
+                        <Link href="/terms" target="_blank" className="text-primary hover:underline font-medium">
+                          <strong>Политикой конфиденциальности и Политикой использования</strong> 
+                        </Link> 
+                        
                       </div>
                       <div className="mt-2 text-xs">
                         Согласен с{" "}

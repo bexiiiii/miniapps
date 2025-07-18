@@ -40,35 +40,75 @@ interface Product {
 function ProductsPageContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
+  const storeFromUrl = searchParams.get('store');
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl || "");
+  const [selectedStore, setSelectedStore] = useState(storeFromUrl || "");
   const [categories, setCategories] = useState<Category[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [currentStore, setCurrentStore] = useState<any>(null);
 
-  // Update selected category when URL changes
+  // Update selected category and store when URL changes
   useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
     }
-  }, [categoryFromUrl]);
+    if (storeFromUrl) {
+      setSelectedStore(storeFromUrl);
+    }
+  }, [categoryFromUrl, storeFromUrl]);
+
+  // Fetch store info if store is selected
+  useEffect(() => {
+    if (selectedStore) {
+      const fetchStoreInfo = async () => {
+        try {
+          const storeInfo = await apiClient.getStoreById(selectedStore);
+          setCurrentStore(storeInfo);
+        } catch (error) {
+          console.error('Error fetching store info:', error);
+          setCurrentStore(null);
+        }
+      };
+      fetchStoreInfo();
+    } else {
+      setCurrentStore(null);
+    }
+  }, [selectedStore]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch products and categories
-        const [productsResponse, categoriesData] = await Promise.all([
-          apiClient.getProducts(currentPage, 20),
-          apiClient.getCategories()
-        ]);
+        let productsResponse;
+        
+        // Fetch products based on filters
+        if (selectedStore) {
+          productsResponse = await apiClient.getProductsByStore(parseInt(selectedStore), currentPage, 20);
+        } else if (selectedCategory) {
+          const category = categories.find(cat => cat.name === selectedCategory);
+          if (category) {
+            productsResponse = await apiClient.getProductsByCategory(category.id, currentPage, 20);
+          } else {
+            productsResponse = await apiClient.getProducts(currentPage, 20);
+          }
+        } else {
+          productsResponse = await apiClient.getProducts(currentPage, 20);
+        }
+        
+        // Fetch categories if not already loaded
+        let categoriesData = categories;
+        if (categories.length === 0) {
+          categoriesData = await apiClient.getCategories();
+          setCategories(categoriesData);
+        }
         
         setProducts(productsResponse.content);
         setTotalPages(productsResponse.totalPages);
-        setCategories(categoriesData);
       } catch (error) {
         console.error('Error fetching data:', error);
         setProducts([]);
@@ -92,14 +132,13 @@ function ProductsPageContent() {
     };
 
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, selectedStore, selectedCategory]);
 
-  // Filter products based on search and category
+  // Filter products based on search (additional client-side filtering)
   const filteredProducts = (products || []).filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || product.categoryName === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   if (loading) {
@@ -115,11 +154,53 @@ function ProductsPageContent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
+        {/* Store Header */}
+        {currentStore && (
+          <div className="mb-6 p-6 bg-card rounded-lg border">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                {currentStore.logo ? (
+                  <Image
+                    src={currentStore.logo}
+                    alt={currentStore.name}
+                    width={64}
+                    height={64}
+                    className="rounded-lg object-cover"
+                  />
+                ) : (
+                  <Store className="h-8 w-8 text-blue-500" />
+                )}
+              </div>
+              <div className="flex-1">
+                <h1 className="text-2xl font-bold text-foreground">
+                  {currentStore.name}
+                </h1>
+                <p className="text-muted-foreground">
+                  {currentStore.address}
+                </p>
+                {currentStore.description && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {currentStore.description}
+                  </p>
+                )}
+              </div>
+              <Link href="/stores">
+                <Button variant="outline">
+                  Все Боксы
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+
         <h1 className="text-3xl font-bold text-foreground mb-4">
-          Продукты со скидкой
+          {currentStore ? `Боксы из ${currentStore.name}` : 'Продукты со скидкой'}
         </h1>
         <p className="text-muted-foreground mb-6">
-          Найдите качественные продукты по выгодным ценам и помогите бороться с пищевыми отходами
+          {currentStore 
+            ? `Актуальные предложения и скидки в магазине ${currentStore.name}`
+            : 'Найдите качественные продукты по выгодным ценам и помогите бороться с пищевыми отходами'
+          }
         </p>
 
         {/* Search and Filter */}
@@ -157,16 +238,16 @@ function ProductsPageContent() {
           <Package2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
             {searchTerm || selectedCategory 
-              ? "Продукты не найдены. Попробуйте изменить критерии поиска."
-              : "Продукты пока не добавлены."
+              ? "Боксы не найдены. Попробуйте изменить критерии поиска."
+              : "Боксы пока не добавлены."
             }
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
           {filteredProducts.map((product) => (
-            <Card key={product.id} className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02]">
-              <CardContent className="p-0">
+            <Card key={product.id} className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02] flex flex-col">
+              <CardContent className="p-0 flex flex-col h-full">
                 <Link href={`/products/${product.id}`}>
                   <div className="relative aspect-square rounded-t-lg overflow-hidden">
                     <Image
@@ -185,55 +266,74 @@ function ProductsPageContent() {
                       </Badge>
                     )}
                   </div>
+                </Link>
 
-                  <div className="p-3">
-                    <div className="mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {product.categoryName}
-                      </Badge>
-                    </div>
+                <div className="p-3 flex flex-col flex-grow">
+                  <div className="mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {product.categoryName}
+                    </Badge>
+                  </div>
 
-                    <h3 className="font-semibold text-base text-foreground mb-2 line-clamp-2 leading-tight">
-                      {product.name}
-                    </h3>
+                  <h3 className="font-semibold text-base text-foreground mb-2 line-clamp-2 leading-tight">
+                    {product.name}
+                  </h3>
 
-                    <p className="text-muted-foreground text-xs mb-3 line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
+                  <p className="text-muted-foreground text-xs mb-3 line-clamp-2 leading-relaxed">
+                    {product.description}
+                  </p>
 
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-bold text-green-600 dark:text-green-400">
-                          ₸{product.price}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold text-green-600 dark:text-green-400">
+                        ₸{product.price}
+                      </span>
+                      {product.originalPrice && product.originalPrice > product.price && (
+                        <span className="text-xs text-muted-foreground line-through">
+                          ₸{product.originalPrice}
                         </span>
-                        {product.originalPrice && product.originalPrice > product.price && (
-                          <span className="text-xs text-muted-foreground line-through">
-                            ₸{product.originalPrice}
-                          </span>
-                        )}
-                      </div>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="text-xs text-muted-foreground mb-3 space-y-1">
-                      <div className="flex items-center gap-1">
-                        <Store className="h-3 w-3" />
-                        <span className="truncate">{product.storeName}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        <span>{new Date(product.expiryDate).toLocaleDateString('ru-RU')}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Package2 className="h-3 w-3" />
-                        <span>Остаток: {product.stockQuantity}</span>
-                      </div>
+                  <div className="text-xs text-muted-foreground mb-3 space-y-1 flex-grow">
+                    <div className="flex items-center gap-2">
+                      {product.storeLogo ? (
+                        <div className="relative w-4 h-4 rounded-full overflow-hidden flex-shrink-0">
+                          <Image
+                            src={product.storeLogo}
+                            alt={`${product.storeName} logo`}
+                            fill
+                            sizes="16px"
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <Store className="h-3 w-3 flex-shrink-0" />
+                      )}
+                      <span className="truncate font-medium">{product.storeName}</span>
                     </div>
+                    {product.storeAddress && (
+                      <div className="flex items-center gap-1 pl-6">
+                        <span className="text-xs text-muted-foreground/80 truncate">{product.storeAddress}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      <span>{new Date(product.expiryDate).toLocaleDateString('ru-RU')}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Package2 className="h-3 w-3" />
+                      <span>Остаток: {product.stockQuantity}</span>
+                    </div>
+                  </div>
 
+                  <Link href={`/products/${product.id}`} className="mt-auto">
                     <Button className="w-full" size="sm">
                       Подробнее
                     </Button>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           ))}

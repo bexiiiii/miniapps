@@ -185,37 +185,38 @@ export function OrderForm({
     
     // Default fallback
     return 'Пн-Пт 9:00-18:00, Сб 10:00-16:00';
-  }, [storeInfo?.openingHours, storeInfo?.closingHours, storeInfo?.workingHours, storeInfo?.workingHoursText]);  return (
-    <div className="h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="flex items-center gap-4 bg-background border-b border-border px-4 py-3 flex-shrink-0">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={onCancel}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Назад
-        </Button>
-        <h1 className="text-xl font-bold text-foreground">Оформление заказа</h1>
-      </div>
+  }, [storeInfo?.openingHours, storeInfo?.closingHours, storeInfo?.workingHours, storeInfo?.workingHoursText]);
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="w-full max-w-2xl mx-auto py-4 px-4 space-y-4 pb-8">
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto max-w-4xl py-6 px-4 space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={onCancel}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Назад
+          </Button>
+          <h1 className="text-2xl font-bold text-foreground">Оформление заказа</h1>
+        </div>
+
+        <div className="space-y-6">
           {/* Store Information Section */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-3 text-white text-lg">
-                <div className="p-2 bg-white/20 rounded-lg">
-                  <Store className="w-5 h-5" />
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+            <CardHeader className="pb-6">
+              <CardTitle className="flex items-center gap-3 text-white text-2xl">
+                <div className="p-3 bg-white/20 rounded-xl">
+                  <Store className="w-6 h-6" />
                 </div>
                 Точка самовывоза
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {storeLoading ? (
                 <div className="animate-pulse space-y-4">
                   <div className="h-5 bg-white/20 rounded w-3/4"></div>
@@ -224,49 +225,49 @@ export function OrderForm({
                 </div>
               ) : (
                 <>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-white/20 rounded-lg mt-1">
-                        <MapPin className="w-4 h-4" />
+                  <div className="space-y-5">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-white/20 rounded-xl mt-1">
+                        <MapPin className="w-6 h-6" />
                       </div>
                       <div>
-                        <p className="font-bold text-base">{storeInfo?.name || 'FoodSave'}</p>
-                        <p className="text-blue-100 mt-1 text-sm leading-relaxed">
+                        <p className="font-bold text-xl">{storeInfo?.name || 'FoodSave'}</p>
+                        <p className="text-blue-100 mt-1 leading-relaxed">
                           {storeInfo?.address || 'г. Алматы, ул. Назарбаева 123, офис 45'}
                         </p>
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-lg">
-                        <Phone className="w-4 h-4" />
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-white/20 rounded-xl">
+                        <Phone className="w-6 h-6" />
                       </div>
-                      <p className="font-semibold text-sm">
+                      <p className="font-semibold text-lg">
                         {storeInfo?.phone || '+7 (727) 123-45-67'}
                       </p>
                     </div>
                     
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-white/20 rounded-lg mt-1">
-                        <Clock className="w-4 h-4" />
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-white/20 rounded-xl mt-1">
+                        <Clock className="w-6 h-6" />
                       </div>
                       <div>
-                        <p className="font-semibold text-sm">Режим работы</p>
-                        <p className="text-blue-100 mt-1 text-xs">
+                        <p className="font-semibold text-lg">Режим работы</p>
+                        <p className="text-blue-100 mt-1">
                           {getWorkingHours()}
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-emerald-500/20 border border-emerald-400/40 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-300" />
-                      <p className="font-bold text-emerald-100 text-sm">
+                  <div className="p-5 bg-emerald-500/20 border border-emerald-400/40 rounded-2xl">
+                    <div className="flex items-center gap-3 mb-3">
+                      <CheckCircle className="w-6 h-6 text-emerald-300" />
+                      <p className="font-bold text-emerald-100 text-lg">
                         Самовывоз бесплатно
                       </p>
                     </div>
-                    <p className="text-emerald-200 text-xs">
+                    <p className="text-emerald-200">
                       Заказ будет готов через 15-30 минут после подтверждения
                     </p>
                   </div>
@@ -276,29 +277,29 @@ export function OrderForm({
           </Card>
 
           {/* Customer Data Form */}
-          <Card className="border-0 shadow-lg bg-background">
-            <CardHeader className="border-b border-border pb-4">
-              <CardTitle className="flex items-center gap-3 text-foreground text-lg">
-                <div className="p-2 bg-muted rounded-lg">
-                  <User className="w-5 h-5 text-muted-foreground" />
+          <Card className="border-0 shadow-xl bg-background">
+            <CardHeader className="border-b border-border pb-6">
+              <CardTitle className="flex items-center gap-3 text-foreground text-2xl">
+                <div className="p-3 bg-muted rounded-xl">
+                  <User className="w-6 h-6 text-muted-foreground" />
                 </div>
                 Ваши данные
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-8">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="space-y-6">
                     <FormField
                       control={form.control}
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-foreground font-medium text-sm">Имя и фамилия</FormLabel>
+                          <FormLabel className="text-foreground font-semibold text-base">Имя и фамилия</FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="Введите ваше имя" 
-                              className="h-10 text-sm bg-background border-border focus:border-primary focus:ring-primary/20"
+                              className="h-14 text-base bg-background border-border focus:border-primary focus:ring-primary/20"
                               {...field} 
                             />
                           </FormControl>
@@ -312,11 +313,11 @@ export function OrderForm({
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-foreground font-medium text-sm">Номер телефона</FormLabel>
+                          <FormLabel className="text-foreground font-semibold text-base">Номер телефона</FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="+7XXXXXXXXXX" 
-                              className="h-10 text-sm bg-background border-border focus:border-primary focus:ring-primary/20"
+                              className="h-14 text-base bg-background border-border focus:border-primary focus:ring-primary/20"
                               {...field} 
                             />
                           </FormControl>
@@ -328,10 +329,10 @@ export function OrderForm({
 
                   <Separator className="bg-border" />
 
-                  <div className="space-y-4">
-                    <h3 className="flex items-center gap-3 text-foreground font-medium text-base">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <CreditCard className="w-4 h-4 text-primary" />
+                  <div className="space-y-6">
+                    <h3 className="flex items-center gap-3 text-foreground font-bold text-xl">
+                      <div className="p-3 bg-primary/10 rounded-xl">
+                        <CreditCard className="w-6 h-6 text-primary" />
                       </div>
                       Способ оплаты
                     </h3>
@@ -408,11 +409,11 @@ export function OrderForm({
                       name="comment"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-foreground font-medium text-sm">Комментарий к заказу</FormLabel>
+                          <FormLabel className="text-foreground font-semibold text-base">Комментарий к заказу</FormLabel>
                           <FormControl>
                             <Textarea
                               placeholder="Укажите особые пожелания или комментарии к заказу"
-                              className="min-h-[80px] text-sm bg-background border-border focus:border-primary focus:ring-primary/20 resize-none"
+                              className="min-h-[120px] text-base bg-background border-border focus:border-primary focus:ring-primary/20 resize-none"
                               {...field}
                             />
                           </FormControl>
@@ -423,31 +424,31 @@ export function OrderForm({
                   </div>
 
                   {/* Order Summary & Action Buttons */}
-                  <div className="space-y-4 pt-4 border-t border-border">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center text-sm">
+                  <div className="space-y-6 pt-6 border-t border-border">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center text-lg">
                         <span className="text-muted-foreground">Стоимость товаров:</span>
                         <span className="font-semibold">₸{subtotal.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between items-center text-sm text-primary">
+                      <div className="flex justify-between items-center text-lg text-primary">
                         <span>Самовывоз:</span>
                         <span className="font-semibold">Бесплатно</span>
                       </div>
                       <Separator className="bg-border" />
-                      <div className="flex justify-between items-center font-bold text-lg">
+                      <div className="flex justify-between items-center font-bold text-2xl">
                         <span className="text-foreground">Итого к оплате:</span>
                         <span className="text-primary">₸{total.toFixed(2)}</span>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <Button
                         type="submit"
                         onClick={form.handleSubmit(onSubmit)}
-                        className="w-full h-10 text-sm"
+                        className="w-full h-14 text-base"
                         disabled={loading}
-                        size="default"
+                        size="lg"
                       >
                         {loading ? (
                           <>
@@ -463,18 +464,18 @@ export function OrderForm({
                         type="button"
                         variant="outline"
                         onClick={onCancel}
-                        className="w-full h-10 text-sm"
-                        size="default"
+                        className="w-full h-14 text-base"
+                        size="lg"
                       >
                         Отмена
                       </Button>
                     </div>
 
-                    <div className="mt-4 p-3 bg-muted/50 border border-border rounded-lg">
-                      <p className="text-foreground font-medium mb-2 text-sm">
+                    <div className="mt-8 p-5 bg-muted/50 border border-border rounded-2xl">
+                      <p className="text-foreground font-semibold mb-3">
                         💡 Полезная информация
                       </p>
-                      <ul className="text-muted-foreground text-xs space-y-1">
+                      <ul className="text-muted-foreground text-sm space-y-2">
                         <li>• Заказ резервируется на 2 часа</li>
                         <li>• При опоздании более чем на 30 минут заказ может быть отменен</li>
                         <li>• При получении необходим документ, удостоверяющий личность</li>

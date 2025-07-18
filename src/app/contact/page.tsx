@@ -386,7 +386,7 @@ export default function ContactPage() {
                     Зарегистрироваться
                   </Button>
                 </Link>
-                <Link href="/products">
+                <Link href="/stores">
                   <Button className="h-12 px-8 transition-colors duration-200" size="lg" variant="outline">
                     Посмотреть боксы
                   </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Clock, ShoppingBag, Star, Truck, Users, MessageCircle, Phone } from "lucide-react";
+import { ArrowRight, Clock, ShoppingBag, Star, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { apiClient, type Product, type Category } from "~/lib/api-client";
 import United24Banner from "~/ui/components/banners/u24";
 import { HeroBadge } from "~/ui/components/hero-badge";
+import { FeaturedStores } from "~/ui/components/featured-stores";
 import { ProductCard } from "~/ui/components/product-card";
 import { PartnersTestimonialStyle } from "~/ui/components/partners-testimonial-style";
 import { TestimonialsSection } from "~/ui/components/testimonials/testimonials-with-marquee";
@@ -185,7 +186,7 @@ export default function HomePage() {
                       lg:leading-[1.1]
                     `}
                   >
-                    Еда со скидкой до 50% —  {" "}
+                    Еда со скидкой до 80% —  {" "}
                     <span
                       className={`
                         bg-gradient-to-r from-primary to-primary/70 bg-clip-text
@@ -210,17 +211,27 @@ export default function HomePage() {
                     sm:flex-row
                   `}
                 >
-                  <Link href="/products">
+                  <Link href="/stores">
                     <Button
                       className={`
                         h-12 gap-1.5 px-8 transition-colors duration-200 bg-lime-500
                       `}
                       size="lg"
                     > 
-                      Купить сейчас <ArrowRight className="h-4 w-4" />
+                      Выбрать боксы <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
-                  
+                  <Link href="/stores">
+                    <Button
+                      variant="outline"
+                      className={`
+                        h-12 gap-1.5 px-8 transition-colors duration-200
+                      `}
+                      size="lg"
+                    > 
+                      Все Боксы
+                    </Button>
+                  </Link>
                 </div>
                 <div
                   className={`
@@ -427,7 +438,7 @@ export default function HomePage() {
               }
             </div>
             <div className="mt-10 flex justify-center">
-              <Link href="/products">
+              <Link href="/stores">
                 <Button className="group h-12 px-8 bg-lime-500 text-white" size="lg" variant="outline" >
                   Смотреть все боксы
                   <ArrowRight
@@ -438,112 +449,6 @@ export default function HomePage() {
                   />
                 </Button>
               </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* B2B Section */}
-        <section
-          className={`
-            py-12
-            md:py-16
-          `}
-        >
-          <div
-            className={`
-              container mx-auto max-w-7xl px-4
-              sm:px-6
-              lg:px-8
-            `}
-          >
-            <div className="mb-8 flex flex-col items-center text-center">
-              <h2
-                className={`
-                  font-display text-3xl leading-tight font-bold tracking-tight text-lime-500
-                  sm:text-4xl
-                  lg:text-5xl
-                `}
-              >
-                Для бизнес-клиентов
-              </h2>
-              <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
-              <p className="mt-4 max-w-2xl text-center text-muted-foreground">
-                Оптовые поставки продуктов со скидкой для ресторанов, кафе и магазинов
-              </p>
-            </div>
-            
-            <div className="grid gap-6 md:grid-cols-3 mb-12">
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
-                    <ShoppingBag className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Лучшое предложение</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Скидки до 70% на большие объемы продукции
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
-                    <Truck className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Самовызов</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Бесплатная доставка от 50,000 ₸
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
-                <CardContent className="p-6 text-center">
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-lime-500/50">
-                    <Users className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Персональный менеджер</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Индивидуальный подход к каждому клиенту
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            
-            <div className="text-center">
-              <p className="mb-6 text-muted-foreground">
-                Свяжитесь с нами для обсуждения условий сотрудничества
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="https://t.me/foodsave_b2b"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`
-                    inline-flex items-center justify-center gap-2 rounded-lg
-                    border border-border bg-backgroud px-6 py-3 text-sm font-medium
-                    transition-all duration-200 hover:bg-accent hover:text-accent-foreground
-                    hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                  `}
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  Telegram
-                </a>
-                <a
-                  href="https://wa.me/77771234567?text=Здравствуйте! Интересует сотрудничество по программе B2B"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`
-                    inline-flex items-center justify-center gap-2 rounded-lg
-                    bg-lime-500 px-6 py-3 text-sm font-medium text-primary-foreground
-                    transition-all duration-200 hover:bg-primary/90 hover:shadow-md
-                    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                  `}
-                >
-                  <Phone className="h-4 w-4" />
-                  WhatsApp
-                </a>
-              </div>
             </div>
           </div>
         </section>
@@ -672,7 +577,7 @@ export default function HomePage() {
                     md:text-xl
                   `}
                 >
-                  Присоединяйся к тем, кто уже получает свежие блюда со скидкой до 50%. Бронируй боксы рядом — пока не расхватали.
+                  Присоединяйся к тем, кто уже получает свежие блюда со скидкой до 8.26943C50%. Бронируй боксы рядом — пока не расхватали.
                 </p>
                 <div
                   className={`
@@ -688,7 +593,7 @@ export default function HomePage() {
                       Зарегистрироваться
                     </Button>
                   </Link>
-                  <Link href="/products">
+                  <Link href="/stores">
                     <Button
                       className="h-12 px-8 transition-colors duration-200"
                       size="lg"

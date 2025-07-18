@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowLeft, Minus, Plus, ShoppingCart, Star, Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ShoppingCart, Star, Clock, MapPin, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Head from "next/head";
 
 import { apiClient, type Product } from "~/lib/api-client";
 import { useCart } from "~/lib/hooks/use-cart";
@@ -16,6 +17,7 @@ import { Separator } from "~/ui/primitives/separator";
 import { Skeleton } from "~/ui/primitives/skeleton";
 import { Badge } from "~/ui/primitives/badge";
 import { cn } from "~/lib/cn";
+import { ProductMetaTags } from "~/components/ProductMetaTags";
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
   currency: "KZT",
@@ -131,6 +133,73 @@ export default function ProductPage() {
     });
   };
 
+  const handleShare = async () => {
+    if (!product) return;
+
+    const discount = product.originalPrice && product.originalPrice > product.price
+      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+      : 0;
+
+    const shareTitle = `${product.name} | FoodSave`;
+    
+    const shareText = discount > 0 
+      ? `🔥 СКИДКА ${discount}%! 
+${product.name}
+💰 Было: ${CURRENCY_FORMATTER.format(product.originalPrice!)}
+💸 Сейчас: ${CURRENCY_FORMATTER.format(product.price)}
+🏪 ${product.storeName}
+
+Успей купить по выгодной цене!`
+      : `🍽️ ${product.name}
+💰 Цена: ${CURRENCY_FORMATTER.format(product.price)}
+🏪 ${product.storeName}
+
+Вкусно и выгодно!`;
+
+    const shareData = {
+      title: shareTitle,
+      text: shareText,
+      url: window.location.href
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        toast.success('Ссылка отправлена');
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+          fallbackShare(shareText);
+        }
+      }
+    } else {
+      fallbackShare(shareText);
+    }
+  };
+
+  const fallbackShare = (shareText: string) => {
+    const textToShare = `${shareText}\n\n${window.location.href}`;
+    
+    navigator.clipboard.writeText(textToShare).then(() => {
+      toast.success('Ссылка и описание скопированы в буфер обмена');
+    }).catch(() => {
+      // Fallback для старых браузеров
+      const textArea = document.createElement('textarea');
+      textArea.value = textToShare;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        toast.success('Ссылка и описание скопированы в буфер обмена');
+      } catch (err) {
+        toast.error('Не удалось скопировать ссылку');
+      }
+      document.body.removeChild(textArea);
+    });
+  };
+
   const calculateDiscount = () => {
     if (product?.originalPrice && product.originalPrice > product.price) {
       return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
@@ -178,6 +247,9 @@ export default function ProductPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Dynamic Meta Tags for Social Sharing */}
+      <ProductMetaTags product={product} />
+      
       {/* Back button */}
       <Link href="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
         <ArrowLeft className="h-4 w-4" />
@@ -304,16 +376,29 @@ export default function ProductPage() {
           {/* Store Info */}
           <Card>
             <CardContent className="pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <MapPin className="h-4 w-4" />
-                <span>Заведение: {product.storeName}</span>
-              </div>
-              {product.storeAddress && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>Адрес: {product.storeAddress}</span>
+              <div className="flex items-center gap-3 mb-3">
+                {product.storeLogo ? (
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                    <Image
+                      src={product.storeLogo}
+                      alt={`${product.storeName} logo`}
+                      fill
+                      sizes="32px"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="h-4 w-4 text-gray-500" />
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-semibold text-foreground">{product.storeName}</h3>
+                  {product.storeAddress && (
+                    <p className="text-sm text-muted-foreground">{product.storeAddress}</p>
+                  )}
                 </div>
-              )}
+              </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 <span>Годен до: {formatDate(product.expiryDate)}</span>
@@ -359,18 +444,30 @@ export default function ProductPage() {
               </span>
             </div>
 
-            <Button
-              onClick={handleAddToCart}
-              disabled={!product.active || product.stockQuantity === 0}
-              size="lg"
-              className="w-full"
-            >
-              <ShoppingCart className="h-5 w-5 mr-2" />
-              {product.active 
-                ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
-                : "Нет в наличии"
-              }
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleAddToCart}
+                disabled={!product.active || product.stockQuantity === 0}
+                size="lg"
+                className="flex-1"
+              >
+                <ShoppingCart className="h-5 w-5 mr-2" />
+                {product.active 
+                  ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
+                  : "Нет в наличии"
+                }
+              </Button>
+              
+              <Button
+                onClick={handleShare}
+                variant="outline"
+                size="lg"
+                className="px-4"
+                aria-label="Поделиться"
+              >
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

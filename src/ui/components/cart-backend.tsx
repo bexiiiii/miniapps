@@ -36,6 +36,7 @@ import { Skeleton } from "~/ui/primitives/skeleton";
 import { OrderReceipt } from "./order-receipt";
 import { OrderForm } from "./order-form";
 import { useAuth } from "~/lib/auth-context";
+import { OutOfStockManager } from "~/components/cart/OutOfStockManager";
 
 // Remove the inline OrderForm component since we're using the one from order-form.tsx
 const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }: {
@@ -74,7 +75,7 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
           console.log('No storeId found, using fallback data');
           // Fallback store info
           setStoreInfo({
-            id: '10',
+            id: 10,
             name: 'FoodSave',
             address: 'г. Алматы, ул. Назарбаева 123, офис 45',
             phone: '+7 (727) 123-45-67',
@@ -86,7 +87,7 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
         console.error('Error fetching store info:', error);
         // Fallback store info on error
         setStoreInfo({
-          id: '10',
+          id: 10,
           name: 'FoodSave',
           address: 'г. Алматы, ул. Назарбаева 123, офис 45',
           phone: '+7 (727) 123-45-67',
@@ -554,6 +555,9 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
               </div>
             ) : (
               <div className="p-4 space-y-4">
+                {/* Out of Stock Manager */}
+                <OutOfStockManager />
+                
                 <AnimatePresence>
                   {items.map((item) => (
                     <motion.div
