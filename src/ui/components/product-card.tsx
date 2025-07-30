@@ -63,8 +63,8 @@ export function ProductCard({
 
   const discount = product.originalPrice
     ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100
-      )
+      ((product.originalPrice - product.price) / product.originalPrice) * 100
+    )
     : 0;
 
   const renderStars = () => {
@@ -81,8 +81,8 @@ export function ProductCard({
               i < fullStars
                 ? "fill-yellow-400 text-yellow-400"
                 : i === fullStars && hasHalfStar
-                ? "fill-yellow-400/50 text-yellow-400"
-                : "stroke-muted/40 text-muted"
+                  ? "fill-yellow-400/50 text-yellow-400"
+                  : "stroke-muted/40 text-muted"
             )}
             key={`star-${product.id}-position-${i + 1}`}
           />
@@ -143,7 +143,7 @@ export function ProductCard({
                 text-destructive-foreground
               `}
               >
-                {discount}% OFF
+                {discount}% скидка
               </Badge>
             )}
 
@@ -221,7 +221,7 @@ export function ProductCard({
                 ) : (
                   <ShoppingCart className="h-4 w-4" />
                 )}
-                Add to Cart
+                Добавить в корзину
               </Button>
             </CardFooter>
           )}
@@ -231,7 +231,7 @@ export function ProductCard({
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <span className="font-medium text-foreground">
-                    ${product.price.toFixed(2)}
+                    ₸{product.price.toFixed(2)}
                   </span>
                   {product.originalPrice ? (
                     <span className="text-sm text-muted-foreground line-through">

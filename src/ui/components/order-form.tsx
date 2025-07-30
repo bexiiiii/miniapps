@@ -472,7 +472,7 @@ export function OrderForm({
 
                     <div className="mt-4 p-3 bg-muted/50 border border-border rounded-lg">
                       <p className="text-foreground font-medium mb-2 text-sm">
-                        💡 Полезная информация
+                         Полезная информация
                       </p>
                       <ul className="text-muted-foreground text-xs space-y-1">
                         <li>• Заказ резервируется на 2 часа</li>

@@ -22,31 +22,31 @@ export const metadata: Metadata = generateSEOMetadata({
 
 const teamMembers = [
   {
-    name: "Анна Иванова",
-    role: "CEO & Co-Founder",
+    name: "Арсен Алиев",
+    role: "CEO",
     image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&crop=face",
+      "https://ui-avatars.com/api/?name=Арсен+Алиев&background=0D8ABC&color=fff",
     bio: "Опыт в технологическом предпринимательстве более 10 лет. Ранее работала в крупных IT-компаниях.",
   },
   {
-    name: "Максим Петров",
+    name: "Тохтамишов Бехруз",
     role: "CTO & Co-Founder",
     image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face",
+      "https://ui-avatars.com/api/?name=Тохтамишов+Бехруз&background=random",
     bio: "Ведущий разработчик с опытом создания масштабируемых платформ. Эксперт в области мобильных технологий.",
   },
   {
-    name: "Елена Козлова",
-    role: "Head of Operations",
+    name: "Денис Шин",
+    role: "COO & Co-Founder",
     image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&crop=face",
+      "https://ui-avatars.com/api/?name=Денис+Шин&background=random",
     bio: "Специалист по операционной деятельности с опытом в ретейле и пищевой индустрии.",
   },
   {
-    name: "Дмитрий Сидоров",
-    role: "Head of Marketing",
+    name: "Томирис Жусупова",
+    role: "PR-manager",
     image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face",
+      "https://ui-avatars.com/api/?name=Томирис+Жусупова&background=random",
     bio: "Маркетинговый стратег с фокусом на digital-каналы и развитие пользовательской базы.",
   },
 ];

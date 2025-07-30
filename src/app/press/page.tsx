@@ -83,7 +83,7 @@ const mediaContacts = [
   {
     name: "Елена Козлова",
     role: "Head of PR & Communications",
-    email: "elena@foodsave.com", 
+    email: "elena@foodsave.com",
     phone: "+7 (777) 234-56-78",
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&crop=face"
   }
@@ -135,7 +135,7 @@ export default function PressPage() {
               </span>
             </h1>
             <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
-              Новости, пресс-релизы и медиа-материалы о нашей миссии по сокращению 
+              Новости, пресс-релизы и медиа-материалы о нашей миссии по сокращению
               пищевых отходов и созданию более устойчивого будущего.
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* Media Contacts */}
+      {/* Media Contacts
       <section className="py-12 md:py-16">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -262,7 +262,7 @@ export default function PressPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Media Appearances */}
       <section className="bg-muted/50 py-12 md:py-16">
@@ -312,7 +312,7 @@ export default function PressPage() {
                 Нужна дополнительная информация?
               </h2>
               <p className="mt-4 text-lg text-muted-foreground md:text-xl">
-                Свяжитесь с нашей PR-командой для получения эксклюзивных интервью, 
+                Свяжитесь с нашей PR-командой для получения эксклюзивных интервью,
                 комментариев экспертов или дополнительных материалов.
               </p>
               <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
