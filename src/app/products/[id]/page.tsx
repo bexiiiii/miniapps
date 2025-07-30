@@ -81,7 +81,7 @@ export default function ProductPage() {
 
   const nextImage = () => {
     if (product && product.images.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === product.images.length - 1 ? 0 : prev + 1
       );
     }
@@ -89,7 +89,7 @@ export default function ProductPage() {
 
   const prevImage = () => {
     if (product && product.images.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === 0 ? product.images.length - 1 : prev - 1
       );
     }
@@ -108,13 +108,12 @@ export default function ProductPage() {
         {Array.from({ length: 5 }).map((_, i) => (
           <Star
             key={i}
-            className={`h-4 w-4 ${
-              i < fullStars
+            className={`h-4 w-4 ${i < fullStars
                 ? "fill-yellow-400 text-yellow-400"
                 : i === fullStars && hasHalfStar
-                ? "fill-yellow-400/50 text-yellow-400"
-                : "text-muted-foreground"
-            }`}
+                  ? "fill-yellow-400/50 text-yellow-400"
+                  : "text-muted-foreground"
+              }`}
           />
         ))}
         <span className="ml-2 text-sm text-muted-foreground">
@@ -141,8 +140,8 @@ export default function ProductPage() {
       : 0;
 
     const shareTitle = `${product.name} | FoodSave`;
-    
-    const shareText = discount > 0 
+
+    const shareText = discount > 0
       ? `🔥 СКИДКА ${discount}%! 
 ${product.name}
 💰 Было: ${CURRENCY_FORMATTER.format(product.originalPrice!)}
@@ -179,7 +178,7 @@ ${product.name}
 
   const fallbackShare = (shareText: string) => {
     const textToShare = `${shareText}\n\n${window.location.href}`;
-    
+
     navigator.clipboard.writeText(textToShare).then(() => {
       toast.success('Ссылка и описание скопированы в буфер обмена');
     }).catch(() => {
@@ -249,9 +248,9 @@ ${product.name}
     <div className="container mx-auto px-4 py-8">
       {/* Dynamic Meta Tags for Social Sharing */}
       <ProductMetaTags product={product} />
-      
+
       {/* Back button */}
-      <Link href="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+      <Link href="/stores" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
         <ArrowLeft className="h-4 w-4" />
         Назад к продуктам
       </Link>
@@ -269,7 +268,7 @@ ${product.name}
               className="object-cover transition-transform duration-300"
               priority
             />
-            
+
             {/* Navigation arrows - only show if multiple images */}
             {product.images && product.images.length > 1 && (
               <>
@@ -322,8 +321,8 @@ ${product.name}
                   onClick={() => goToImage(index)}
                   className={cn(
                     "relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all",
-                    currentImageIndex === index 
-                      ? "border-primary ring-2 ring-primary/20" 
+                    currentImageIndex === index
+                      ? "border-primary ring-2 ring-primary/20"
                       : "border-border hover:border-primary/50"
                   )}
                 >
@@ -452,12 +451,12 @@ ${product.name}
                 className="flex-1"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                {product.active 
+                {product.active
                   ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
                   : "Нет в наличии"
                 }
               </Button>
-              
+
               <Button
                 onClick={handleShare}
                 variant="outline"

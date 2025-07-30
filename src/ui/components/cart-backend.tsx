@@ -394,7 +394,6 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
       const orderRequest: CreateOrderRequest = {
         customerName: formData.name,
         customerPhone: formData.phone,
-        contactPhone: formData.phone,
         paymentMethod: formData.paymentMethod === "cash" ? "CASH" : "CARD",
         comment: formData.comment,
         pickupTime: formData.pickupTime,

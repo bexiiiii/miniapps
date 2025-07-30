@@ -84,13 +84,12 @@ export default function ProductPage() {
         {Array.from({ length: 5 }).map((_, i) => (
           <Star
             key={i}
-            className={`h-4 w-4 ${
-              i < fullStars
+            className={`h-4 w-4 ${i < fullStars
                 ? "fill-yellow-400 text-yellow-400"
                 : i === fullStars && hasHalfStar
-                ? "fill-yellow-400/50 text-yellow-400"
-                : "text-muted-foreground"
-            }`}
+                  ? "fill-yellow-400/50 text-yellow-400"
+                  : "text-muted-foreground"
+              }`}
           />
         ))}
         <span className="ml-2 text-sm text-muted-foreground">
@@ -152,7 +151,7 @@ export default function ProductPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back button */}
-      <Link href="/products" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
+      <Link href="/stores" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
         <ArrowLeft className="h-4 w-4" />
         Назад к продуктам
       </Link>
@@ -274,7 +273,7 @@ export default function ProductPage() {
               className="w-full"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
-              {product.isAvailable 
+              {product.isAvailable
                 ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
                 : "Нет в наличии"
               }
