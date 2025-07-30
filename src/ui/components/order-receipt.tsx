@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Clock, MapPin, Phone, Store, User, QrCode } from "lucide-react";
+import { Check, Clock, MapPin, Phone, Store, User, QrCode, X } from "lucide-react";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import QRCode from "qrcode";
 
@@ -49,15 +49,18 @@ export function OrderReceipt({
   onContinueShopping,
 }: OrderReceiptProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
-  const [countdown, setCountdown] = useState(15); // 15 секунд до автоматического возврата
-  const [isActive, setIsActive] = useState(true); // Флаг для предотвращения множественных вызовов
-  const hasReturnedRef = useRef(false); // Ref для отслеживания возврата
+  const [countdown, setCountdown] = useState(15);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const hasReturnedRef = useRef(false);
   
   // Стабилизируем функции обратного вызова
   const handleContinueShopping = useCallback(() => {
     if (!hasReturnedRef.current) {
       hasReturnedRef.current = true;
-      setIsActive(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       onContinueShopping();
     }
   }, [onContinueShopping]);
@@ -65,7 +68,10 @@ export function OrderReceipt({
   const handleClose = useCallback(() => {
     if (!hasReturnedRef.current) {
       hasReturnedRef.current = true;
-      setIsActive(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       onClose();
     }
   }, [onClose]);
@@ -100,28 +106,60 @@ export function OrderReceipt({
     generateQRCode();
   }, [orderId, total, customerInfo.name, customerInfo.phone, status]);
 
+  // Основной эффект для таймера - ИСПРАВЛЕНО
+  useEffect(() => {
+    // Очищаем предыдущий интервал если он есть
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // Сбрасываем состояние при монтировании
+    setCountdown(15);
+    hasReturnedRef.current = false;
+
+    // Запускаем новый интервал
+    intervalRef.current = setInterval(() => {
+      setCountdown((prevCountdown) => {
+        const newCountdown = prevCountdown - 1;
+        
+        // Когда таймер достигает 0, выполняем автовозврат
+        if (newCountdown <= 0 && !hasReturnedRef.current) {
+          // Очищаем интервал перед выполнением действия
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          // Выполняем автовозврат через небольшую задержку
+          setTimeout(() => {
+            handleContinueShopping();
+          }, 100);
+          return 0;
+        }
+        
+        return newCountdown;
+      });
+    }, 1000);
+
+    // Cleanup function
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [handleContinueShopping]); // Добавляем handleContinueShopping в зависимости
+
   // Эффект очистки при размонтировании
   useEffect(() => {
     return () => {
       hasReturnedRef.current = true;
-      setIsActive(false);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, []);
-
-  // Обратный отсчет для автоматического возврата
-  useEffect(() => {
-    if (!isActive) return; // Не запускаем таймер, если компонент неактивен
-    
-    if (countdown > 0) {
-      const timer = setTimeout(() => {
-        setCountdown(countdown - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (countdown === 0 && !hasReturnedRef.current) {
-      // Автоматический возврат к корзине только один раз
-      handleContinueShopping();
-    }
-  }, [countdown, isActive, handleContinueShopping]);
   
   const getPickupTimeText = (pickupTime?: string) => {
     if (!pickupTime) return "15-30 минут";
@@ -143,12 +181,23 @@ export function OrderReceipt({
   return (
     <motion.div
       animate={{ opacity: 1, scale: 1 }}
-      className="max-w-md mx-auto"
+      className="max-w-md mx-auto relative"
       initial={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
     >
       <Card>
-        <CardHeader className="text-center space-y-4">
+        {/* Кнопка закрытия X в правом верхнем углу */}
+        <Button
+          onClick={handleClose}
+          variant="ghost"
+          size="icon"
+          className="absolute top-2 right-2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white shadow-sm"
+          disabled={hasReturnedRef.current}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+
+        <CardHeader className="text-center space-y-4 pt-8">
           <motion.div
             animate={{ scale: 1 }}
             className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center"
@@ -208,7 +257,7 @@ export function OrderReceipt({
             <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
               <div 
                 className="bg-primary h-1 rounded-full transition-all duration-1000 ease-linear"
-                style={{ width: `${(countdown / 15) * 100}%` }}
+                style={{ width: `${Math.max(0, (countdown / 15) * 100)}%` }}
               />
             </div>
           </motion.div>
@@ -308,7 +357,7 @@ export function OrderReceipt({
             <Button 
               onClick={handleContinueShopping}
               className="w-full"
-              disabled={!isActive}
+              disabled={hasReturnedRef.current}
             >
               Продолжить покупки
               {countdown > 0 && ` (${countdown})`}
@@ -317,7 +366,7 @@ export function OrderReceipt({
               onClick={handleClose}
               variant="outline" 
               className="w-full"
-              disabled={!isActive}
+              disabled={hasReturnedRef.current}
             >
               Закрыть
             </Button>
