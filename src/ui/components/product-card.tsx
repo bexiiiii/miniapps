@@ -189,11 +189,11 @@ export function ProductCard({
                 <div className="mt-1.5">{renderStars()}</div>
                 <div className="mt-2 flex items-center gap-1.5">
                   <span className="font-medium text-foreground">
-                    ${product.price.toFixed(2)}
+                    ₸{product.price.toFixed(2)}
                   </span>
                   {product.originalPrice ? (
                     <span className="text-sm text-muted-foreground line-through">
-                      ${product.originalPrice.toFixed(2)}
+                      ₸{product.originalPrice.toFixed(2)}
                     </span>
                   ) : null}
                 </div>
@@ -235,7 +235,7 @@ export function ProductCard({
                   </span>
                   {product.originalPrice ? (
                     <span className="text-sm text-muted-foreground line-through">
-                      ${product.originalPrice.toFixed(2)}
+                      ₸{product.originalPrice.toFixed(2)}
                     </span>
                   ) : null}
                 </div>

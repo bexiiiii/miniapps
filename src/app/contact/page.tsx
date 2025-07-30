@@ -43,8 +43,8 @@ const contactMethods = [
     icon: <MessageCircle className="h-6 w-6 text-primary" />,
     title: "Telegram",
     description: "Мгновенные ответы",
-    contact: "@foodsave_support",
-    action: "https://t.me/foodsave_support"
+    contact: "@FoodSave_kz",
+    action: "https://t.me/FoodSave_kz"
   }
 ];
 
@@ -97,10 +97,10 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Reset form
     setFormData({
       name: "",
@@ -110,7 +110,7 @@ export default function ContactPage() {
       message: ""
     });
     setIsSubmitting(false);
-    
+
     // Show success message (you can implement a toast here)
     alert("Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.");
   };
@@ -133,7 +133,7 @@ export default function ContactPage() {
               </span>
             </h1>
             <p className="mt-6 max-w-3xl mx-auto text-lg text-muted-foreground md:text-xl">
-              Есть вопросы, предложения или хотите стать партнером? 
+              Есть вопросы, предложения или хотите стать партнером?
               Мы всегда готовы помочь и ответить на ваши вопросы.
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function ContactPage() {
                 Заполните форму ниже, и мы ответим вам в течение 24 часов
               </p>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
@@ -208,12 +208,12 @@ export default function ContactPage() {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="department">Отдел</Label>
-                <select 
+                <select
                   id="department"
-                  value={formData.department} 
+                  value={formData.department}
                   onChange={(e) => handleChange("department", e.target.value)}
                   className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -224,7 +224,7 @@ export default function ContactPage() {
                   <option value="press">Пресс-служба</option>
                 </select>
               </div>
-              
+
               <div>
                 <Label htmlFor="subject">Тема *</Label>
                 <Input
@@ -235,7 +235,7 @@ export default function ContactPage() {
                   placeholder="Кратко опишите вопрос"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="message">Сообщение *</Label>
                 <Textarea
@@ -247,7 +247,7 @@ export default function ContactPage() {
                   placeholder="Подробно опишите ваш вопрос или предложение..."
                 />
               </div>
-              
+
               <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting ? "Отправляем..." : "Отправить сообщение"}
               </Button>
@@ -337,7 +337,7 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Рестораны размещают боксы с едой со скидкой, 
+                  Рестораны размещают боксы с едой со скидкой,
                   вы заказываете через приложение и забираете в удобное время.
                 </CardDescription>
               </CardContent>
@@ -348,7 +348,7 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Напишите нам на business@foodsave.com или заполните форму выше, 
+                  Напишите нам на business@foodsave.com или заполните форму выше,
                   выбрав отдел "Для бизнеса".
                 </CardDescription>
               </CardContent>
@@ -359,7 +359,7 @@ export default function ContactPage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Да! Скачайте наше приложение в App Store или Google Play для 
+                  Да! Скачайте наше приложение в App Store или Google Play для
                   более удобного использования.
                 </CardDescription>
               </CardContent>
