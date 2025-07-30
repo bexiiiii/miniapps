@@ -158,33 +158,6 @@ interface CreateOrderRequest {
   deliveryNotes?: string;
 }
 
-interface OrderItem {
-  id: number;
-  productId: number;
-  productName: string;
-  price: number;
-  quantity: number;
-  subtotal: number;
-}
-
-interface Order {
-  id: number;
-  orderNumber: string;
-  customerId?: number;
-  customerName: string;
-  customerPhone: string;
-  status: 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
-  paymentMethod: 'CASH' | 'CARD';
-  paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
-  items: OrderItem[];
-  subtotal: number;
-  total: number;
-  comment?: string;
-  pickupTime?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 class ApiClient {
   private baseUrl: string;
 
@@ -585,7 +558,39 @@ export type {
   CartItem, 
   StoreInfo,
   Category,
-  CreateOrderRequest,
-  Order,
-  OrderItem
+  CreateOrderRequest
+};
+
+export type OrderItem = {
+  id: number;
+  productId: number;
+  productName: string;
+  productImage?: string;
+  price: number;
+  unitPrice?: number;
+  totalPrice?: number;
+  quantity: number;
+  subtotal: number;
+  categoryName?: string;
+};
+
+export type Order = {
+  id: number;
+  orderNumber: string;
+  customerId?: number;
+  customerName: string;
+  customerPhone: string;
+  contactPhone?: string;
+  userPhone?: string;
+  storePhone?: string;
+  status: 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+  paymentMethod: 'CASH' | 'CARD';
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+  items: OrderItem[];
+  subtotal: number;
+  total: number;
+  comment?: string;
+  pickupTime?: string;
+  createdAt: string;
+  updatedAt: string;
 };

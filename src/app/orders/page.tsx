@@ -31,6 +31,7 @@ interface Order {
   total: number;
   items: OrderItem[];
   contactPhone?: string;
+  userPhone?: string;
   paymentMethod: string;
   createdAt: string;
   deliveryNotes?: string;
@@ -38,6 +39,7 @@ interface Order {
   userEmail?: string;
   storeName?: string;
   storeAddress?: string;
+  storePhone?: string; // Added storePhone to the interface
 }
 
 export default function OrdersPage() {
@@ -131,13 +133,13 @@ export default function OrdersPage() {
                 id: item.id.toString(),
                 productId: item.productId.toString(),
                 productName: item.productName,
-                productImage: "/placeholder.svg", // API doesn't provide image
+                productImage: item.productImage || "/placeholder.svg",
                 quantity: item.quantity,
-                unitPrice: Number(item.price),
-                totalPrice: Number(item.subtotal),
-                categoryName: undefined // API doesn't provide category name
+                unitPrice: item.unitPrice !== undefined && item.unitPrice !== null ? Number(item.unitPrice) : 0,
+                totalPrice: item.totalPrice !== undefined && item.totalPrice !== null ? Number(item.totalPrice) : 0,
+                categoryName: item.categoryName
               })),
-              contactPhone: order.customerPhone || user?.phone || "+7 (777) 123-45-67",
+              contactPhone: order.contactPhone || order.userPhone || order.customerPhone || user?.phone || order.storePhone || "",
               paymentMethod: order.paymentMethod.toLowerCase(),
               createdAt: order.createdAt,
               deliveryNotes: order.comment,
@@ -494,7 +496,7 @@ export default function OrdersPage() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Контактный телефон:</p>
-                    <p className="font-medium">{order.contactPhone}</p>
+                    <p className="font-medium">{order.contactPhone || "—"}</p>
                   </div>
                   {order.storeAddress && (
                     <div>

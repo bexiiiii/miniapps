@@ -361,6 +361,8 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
     clearCart 
   } = useCartBackend();
 
+  const { user } = useAuth();
+
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -388,10 +390,11 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
   const handleOrderSubmit = async (formData: any) => {
     setIsSubmittingOrder(true);
     try {
-      // Prepare order data for backend
+      console.log('handleOrderSubmit formData:', formData); // debug
       const orderRequest: CreateOrderRequest = {
         customerName: formData.name,
         customerPhone: formData.phone,
+        contactPhone: formData.phone,
         paymentMethod: formData.paymentMethod === "cash" ? "CASH" : "CARD",
         comment: formData.comment,
         pickupTime: formData.pickupTime,
