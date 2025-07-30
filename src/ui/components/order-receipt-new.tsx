@@ -94,49 +94,14 @@ export function OrderReceipt({
               Способ оплаты: <strong>{paymentMethod}</strong>
             </p>
             <p className="text-xs text-blue-600 mt-1">
-              В настоящее время идет подключение платежных шлюзов. 
+              В настоящее время идет подключение платежных шлюзов.
               Пока доступна только оплата наличными при получении.
             </p>
           </div>
 
-          {/* Customer Info */}
-          <div className="space-y-3">
-            <h4 className="font-medium flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Информация о получателе
-            </h4>
-            <div className="bg-gray-50 p-3 rounded-lg space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <User className="w-3 h-3 text-gray-500" />
-                <span>{customerInfo.name}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="w-3 h-3 text-gray-500" />
-                <span>{customerInfo.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Clock className="w-3 h-3 text-gray-500" />
-                <span>Готовность: {getPickupTimeText(customerInfo.pickupTime)}</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Pickup Location */}
-          <div className="space-y-3">
-            <h4 className="font-medium flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Адрес самовывоза
-            </h4>
-            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-              <div className="flex items-center gap-2 mb-1">
-                <MapPin className="w-4 h-4 text-green-600" />
-                <span className="font-medium text-green-800">г. Алматы, ул. Назарбаева 123, офис 45</span>
-              </div>
-              <p className="text-xs text-green-600">
-                Режим работы: Пн-Пт 9:00-18:00, Сб 10:00-16:00
-              </p>
-            </div>
-          </div>
+
+
 
           {/* Order Items */}
           <div className="space-y-3">
@@ -183,10 +148,7 @@ export function OrderReceipt({
           </div>
 
           {/* Additional Info */}
-          <div className="text-xs text-muted-foreground text-center space-y-1">
-            <p>Время обработки заказа: 15-30 минут</p>
-            <p>Мы свяжемся с вами для уточнения деталей</p>
-          </div>
+
         </CardContent>
       </Card>
     </motion.div>

@@ -42,9 +42,9 @@ interface OrderFormProps {
   onSubmit: (data: OrderFormData) => void;
   onCancel: () => void;
   loading?: boolean;
-  items?: Array<{ 
+  items?: Array<{
     id?: string | number;
-    storeId?: string | number; 
+    storeId?: string | number;
     store_id?: string | number;
     store?: { id?: string | number };
     [key: string]: any;
@@ -93,14 +93,14 @@ export function OrderForm({
       setStoreLoading(true);
       try {
         console.log('OrderForm items:', items);
-        
+
         // Get storeId from first item in cart
         const firstItem = items?.[0];
         console.log('OrderForm Debug - Full item structure:', firstItem);
-        
+
         let storeId = firstItem?.storeId || firstItem?.store_id || firstItem?.store?.id;
         console.log('OrderForm Debug - Extracted storeId from item:', storeId);
-        
+
         // If no storeId found, try to get product info and extract storeId
         if (!storeId && firstItem?.id) {
           try {
@@ -112,19 +112,19 @@ export function OrderForm({
             console.warn('Failed to get product info:', error);
           }
         }
-        
+
         let targetStoreId = 1; // Default store ID
-        
+
         if (storeId && !isNaN(Number(storeId))) {
           targetStoreId = Number(storeId);
         }
-        
+
         console.log('Fetching store info for storeId:', targetStoreId);
-        
+
         // Try different store IDs if the current one fails
         const storeIdsToTry = [targetStoreId, 1, 2, 3, 10];
         let storeData = null;
-        
+
         for (const idToTry of storeIdsToTry) {
           try {
             console.log(`Trying to fetch store with ID: ${idToTry}`);
@@ -136,7 +136,7 @@ export function OrderForm({
             continue;
           }
         }
-        
+
         if (storeData) {
           setStoreInfo(storeData);
         } else {
@@ -144,7 +144,7 @@ export function OrderForm({
         }
       } catch (error) {
         console.error('Error fetching store info:', error);
-        
+
         // Set default store info if API fails
         console.log('Setting fallback store info');
         setStoreInfo({
@@ -172,17 +172,17 @@ export function OrderForm({
         return `Пн-Пт ${wh.monday.open}-${wh.friday.close}, Сб ${wh.saturday.open}-${wh.saturday.close}`;
       }
     }
-    
+
     // Use workingHoursText if available
     if (storeInfo?.workingHoursText) {
       return storeInfo.workingHoursText;
     }
-    
+
     // Use simple opening/closing hours
     if (storeInfo?.openingHours && storeInfo?.closingHours) {
       return `Пн-Пт ${storeInfo.openingHours}-${storeInfo.closingHours}, Сб 10:00-16:00`;
     }
-    
+
     // Default fallback
     return 'Пн-Пт 9:00-18:00, Сб 10:00-16:00';
   }, [storeInfo?.openingHours, storeInfo?.closingHours, storeInfo?.workingHours, storeInfo?.workingHoursText]);
@@ -237,7 +237,7 @@ export function OrderForm({
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-white/20 rounded-xl">
                         <Phone className="w-6 h-6" />
@@ -246,7 +246,7 @@ export function OrderForm({
                         {storeInfo?.phone || '+7 (727) 123-45-67'}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-start gap-4">
                       <div className="p-3 bg-white/20 rounded-xl mt-1">
                         <Clock className="w-6 h-6" />
@@ -297,10 +297,10 @@ export function OrderForm({
                         <FormItem>
                           <FormLabel className="text-foreground font-semibold text-base">Имя и фамилия</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="Введите ваше имя" 
+                            <Input
+                              placeholder="Введите ваше имя"
                               className="h-14 text-base bg-background border-border focus:border-primary focus:ring-primary/20"
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
@@ -315,10 +315,10 @@ export function OrderForm({
                         <FormItem>
                           <FormLabel className="text-foreground font-semibold text-base">Номер телефона</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="+7XXXXXXXXXX" 
+                            <Input
+                              placeholder="+7XXXXXXXXXX"
                               className="h-14 text-base bg-background border-border focus:border-primary focus:ring-primary/20"
-                              {...field} 
+                              {...field}
                             />
                           </FormControl>
                           <FormMessage />
@@ -336,7 +336,7 @@ export function OrderForm({
                       </div>
                       Способ оплаты
                     </h3>
-                    
+
                     <FormField
                       control={form.control}
                       name="paymentMethod"
@@ -344,11 +344,11 @@ export function OrderForm({
                         <FormItem>
                           <FormControl>
                             <div className="space-y-4">
-                              <div 
+                              <div
                                 className={cn(
                                   "relative flex items-center gap-5 p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200",
-                                  field.value === "cash" 
-                                    ? "border-primary bg-primary/5 shadow-lg ring-4 ring-primary/20" 
+                                  field.value === "cash"
+                                    ? "border-primary bg-primary/5 shadow-lg ring-4 ring-primary/20"
                                     : "border-border bg-background hover:border-primary/50 hover:bg-primary/5"
                                 )}
                                 onClick={() => field.onChange("cash")}
@@ -473,12 +473,11 @@ export function OrderForm({
 
                     <div className="mt-8 p-5 bg-muted/50 border border-border rounded-2xl">
                       <p className="text-foreground font-semibold mb-3">
-                        💡 Полезная информация
+                        Полезная информация
                       </p>
                       <ul className="text-muted-foreground text-sm space-y-2">
                         <li>• Заказ резервируется на 2 часа</li>
                         <li>• При опоздании более чем на 30 минут заказ может быть отменен</li>
-                        <li>• При получении необходим документ, удостоверяющий личность</li>
                       </ul>
                     </div>
                   </div>

@@ -59,13 +59,13 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
       try {
         const firstItem = items?.[0];
         const storeId = firstItem?.storeId;
-        
+
         console.log('OrderForm Debug:', {
           items: items,
           firstItem: firstItem,
           storeId: storeId
         });
-        
+
         if (storeId) {
           console.log('Fetching store data for storeId:', storeId);
           const storeData = await apiClient.getStoreById(Number(storeId));
@@ -135,7 +135,7 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
         </div>
 
         {/* Store Info Card */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-xl p-4">
+        <div className="bg-gradient-to-br from-lime-50 to-lime-100 border-2 border-blue-200 rounded-xl p-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,7 +144,7 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
             </div>
             <h3 className="text-lg font-semibold text-blue-900">Точка самовывоза</h3>
           </div>
-        
+
           {storeLoading ? (
             <div className="animate-pulse space-y-3">
               <div className="h-4 bg-blue-200 rounded w-3/4"></div>
@@ -163,14 +163,14 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
                   <p className="text-gray-700">{storeInfo?.address || 'г. Алматы, ул. Назарбаева 123, офис 45'}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <p className="font-medium">{storeInfo?.phone || '+7 (727) 123-45-67'}</p>
               </div>
-              
+
               <div className="flex items-center gap-3">
                 <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -179,18 +179,6 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
                   <p className="font-medium">Режим работы</p>
                   <p className="text-sm text-gray-600">Пн-Пт 9:00-18:00, Сб 10:00-16:00</p>
                 </div>
-              </div>
-
-              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800 font-medium flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Самовывоз бесплатно
-                </p>
-                <p className="text-green-700 text-sm mt-1">
-                  Заказ будет готов через 15-30 минут после подтверждения
-                </p>
               </div>
             </div>
           )}
@@ -241,15 +229,14 @@ const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }:
               </svg>
               Способ оплаты
             </h4>
-            
+
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 onClick={() => setPaymentMethod('cash')}
-                className={`flex items-center space-x-3 p-4 border-2 rounded-lg transition-all ${
-                  paymentMethod === 'cash' 
-                    ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200' 
-                    : 'border-gray-200 bg-white hover:border-blue-300'
-                }`}
+                className={`flex items-center space-x-3 p-4 border-2 rounded-lg transition-all ${paymentMethod === 'cash'
+                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                  : 'border-gray-200 bg-white hover:border-blue-300'
+                  }`}
               >
                 <svg className={`w-6 h-6 ${paymentMethod === 'cash' ? 'text-blue-600' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -349,16 +336,16 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
   const [orderData, setOrderData] = React.useState<any>(null);
   const [isSubmittingOrder, setIsSubmittingOrder] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  
-  const { 
-    items, 
-    itemCount, 
-    subtotal, 
-    loading, 
-    error, 
-    updateQuantity, 
+
+  const {
+    items,
+    itemCount,
+    subtotal,
+    loading,
+    error,
+    updateQuantity,
     removeItem,
-    clearCart 
+    clearCart
   } = useCartBackend();
 
   const { user } = useAuth();
@@ -407,7 +394,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
 
       // Create order from cart via API
       const createdOrder = await apiClient.createOrderFromCart(orderRequest);
-      
+
       // Prepare order data for display
       const order = {
         orderId: createdOrder.orderNumber,
@@ -431,15 +418,15 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
         status: createdOrder.status,
         createdAt: createdOrder.createdAt
       };
-      
+
       setOrderData(order);
       setCurrentView("receipt");
-      
+
       // Clear cart after successful order
       setTimeout(() => {
         clearCart();
       }, 1000);
-      
+
     } catch (error) {
       console.error("Error creating order:", error);
       // Handle error (show toast, etc.)
@@ -559,7 +546,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
               <div className="p-4 space-y-4">
                 {/* Out of Stock Manager */}
                 <OutOfStockManager />
-                
+
                 <AnimatePresence>
                   {items.map((item) => (
                     <motion.div
@@ -632,8 +619,8 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
                 <span>Итого:</span>
                 <span>₸{subtotal.toFixed(2)}</span>
               </div>
-              <Button 
-                className="w-full" 
+              <Button
+                className="w-full"
                 size="lg"
                 disabled={loading}
                 onClick={handleProceedToOrder}
@@ -641,9 +628,9 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
                 Оформить заказ
               </Button>
               <Link href="/products">
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
+                <Button
+                  variant="outline"
+                  className="w-full"
                   size="lg"
                   onClick={() => setIsOpen(false)}
                 >
