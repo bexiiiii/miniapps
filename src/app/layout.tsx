@@ -14,6 +14,7 @@ import { cn } from "~/lib/cn";
 import "~/css/globals.css";
 import { Footer } from "~/ui/components/footer";
 import { Header } from "~/ui/components/header/header-test";
+import { MiniAppBottomNav } from "~/ui/components/mini-app-bottom-nav";
 import { ThemeProvider } from "~/ui/components/theme-provider";
 import { Toaster } from "~/ui/primitives/sonner";
 
@@ -210,8 +211,9 @@ export default function RootLayout({
             <CartProvider>
               <CartBackendProvider>
                 <Header showAuth={true} />
-                <main className={`flex min-h-screen flex-col`}>{children}</main>
+                <main className={`flex min-h-screen flex-col pb-28`}>{children}</main>
                 <Footer />
+                <MiniAppBottomNav />
                 <Toaster />
               </CartBackendProvider>
             </CartProvider>

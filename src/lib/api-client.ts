@@ -234,8 +234,39 @@ class ApiClient {
     
     // Store tokens
     localStorage.setItem('authToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
+
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
     
+    return data;
+  }
+
+  async telegramLogin(initData: string): Promise<AuthResponse> {
+    const response = await fetch(`${this.baseUrl}/auth/telegram`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ initData }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Telegram authentication failed');
+    }
+
+    const data = await response.json() as AuthResponse;
+
+    localStorage.setItem('authToken', data.accessToken);
+
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
+
     return data;
   }
 
@@ -256,7 +287,12 @@ class ApiClient {
     
     // Store tokens
     localStorage.setItem('authToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
+
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
     
     return data;
   }
