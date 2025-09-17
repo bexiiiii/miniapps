@@ -256,7 +256,23 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error('Telegram authentication failed');
+      let errorDetails = '';
+      try {
+        const data = await response.clone().json() as { message?: string; error?: string };
+        errorDetails = data.message || data.error || '';
+      } catch {
+        try {
+          errorDetails = await response.text();
+        } catch {
+          errorDetails = '';
+        }
+      }
+
+      const statusInfo = `${response.status} ${response.statusText}`.trim();
+      const detail = errorDetails?.trim();
+      const message = detail ? `Telegram authentication failed: ${statusInfo} - ${detail}` : `Telegram authentication failed: ${statusInfo}`;
+
+      throw new Error(message);
     }
 
     const data = await response.json() as AuthResponse;

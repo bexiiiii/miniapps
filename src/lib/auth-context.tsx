@@ -122,7 +122,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } catch (authError) {
             console.error("Telegram authentication failed:", authError);
             if (!cancelled) {
-              toast.error("Не удалось авторизоваться через Telegram. Попробуйте позже.");
+              const errorMessage = authError instanceof Error
+                ? authError.message
+                : "Не удалось авторизоваться через Telegram. Попробуйте позже.";
+              toast.error(errorMessage);
               localStorage.removeItem("authToken");
               localStorage.removeItem("refreshToken");
               localStorage.removeItem("user");
