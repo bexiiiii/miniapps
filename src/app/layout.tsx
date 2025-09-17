@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 // import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 // import { extractRouterConfig } from "uploadthing/server";
 
 import { SEO_CONFIG } from "~/app";
@@ -179,6 +180,10 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
