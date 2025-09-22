@@ -43,8 +43,8 @@ const contactMethods = [
     icon: <MessageCircle className="h-6 w-6 text-primary" />,
     title: "Telegram",
     description: "Мгновенные ответы",
-    contact: "@FoodSave_kz",
-    action: "https://t.me/FoodSave_kz"
+    contact: "@FoodSave_bot",
+    action: "https://t.me/FoodSave_bot"
   }
 ];
 

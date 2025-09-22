@@ -210,7 +210,7 @@ export default function BusinessPage() {
                 Присоединяйтесь к первым 50 партнёрам и получите пожизненный бесплатный доступ к платформе FoodSave
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="https://t.me/FoodSave_kz" target="_blank" rel="noopener noreferrer">
+                <Link href="https://t.me/FoodSave_bot" target="_blank" rel="noopener noreferrer">
                   <Button className="h-12 px-8 transition-colors duration-200" size="lg" variant="outline">
                     <MessageCircle className="mr-2 h-5 w-5" />
                     Написать в Telegram

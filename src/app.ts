@@ -55,7 +55,7 @@ export const SEO_CONFIG = {
   },
   social: {
     instagram: "https://instagram.com/foodsave_kz",
-    telegram: "https://t.me/foodsave_kz",
+    telegram: "https://t.me/FoodSave_bot",
     whatsapp: "https://wa.me/77771234567"
   }
 };
