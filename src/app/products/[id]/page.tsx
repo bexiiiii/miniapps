@@ -1,23 +1,48 @@
 "use client";
 
-import { ArrowLeft, Minus, Plus, ShoppingCart, Star, Clock, MapPin, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Star, Clock, MapPin, ChevronLeft, ChevronRight, Share2, TicketCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Head from "next/head";
 
 import { apiClient, type Product } from "~/lib/api-client";
-import { useCart } from "~/lib/hooks/use-cart";
-import { useCartBackend } from "~/lib/hooks/use-cart-backend";
 import { Button } from "~/ui/primitives/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/ui/primitives/card";
+import { Card, CardContent } from "~/ui/primitives/card";
 import { Separator } from "~/ui/primitives/separator";
 import { Skeleton } from "~/ui/primitives/skeleton";
 import { Badge } from "~/ui/primitives/badge";
 import { cn } from "~/lib/cn";
 import { ProductMetaTags } from "~/components/ProductMetaTags";
+import { SEO_CONFIG } from "~/app";
+
+type TelegramWebApp = {
+  sendData?: (data: string) => void;
+  openTelegramLink?: (url: string) => void;
+  close?: () => void;
+};
+
+type TelegramWindow = Window & {
+  Telegram?: {
+    WebApp?: TelegramWebApp;
+  };
+};
+
+const encodePayload = (value: string) => {
+  try {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(value);
+    let binary = "";
+    bytes.forEach((byte) => {
+      binary += String.fromCharCode(byte);
+    });
+    return encodeURIComponent(btoa(binary));
+  } catch (error) {
+    console.error("Failed to encode payload for Telegram link:", error);
+    return "";
+  }
+};
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
   currency: "KZT",
@@ -27,7 +52,6 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
-  const { addItem } = useCartBackend();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -55,15 +79,74 @@ export default function ProductPage() {
     }
   };
 
-  const handleAddToCart = async () => {
-    if (product) {
+  const handleReserve = () => {
+    if (!product) {
+      return;
+    }
+
+    const reservationSummary = {
+      action: "reserve_product",
+      productId: product.id,
+      productName: product.name,
+      storeName: product.storeName,
+      quantity,
+      unitPrice: product.price,
+      totalPrice: product.price * quantity,
+      timestamp: new Date().toISOString(),
+    };
+
+    const message = [
+      "🔒 Бронирование FoodSave",
+      `Коробка: ${product.name}`,
+      `Магазин: ${product.storeName}`,
+      `Количество: ${quantity}`,
+      `Итого: ${CURRENCY_FORMATTER.format(product.price * quantity)}`,
+    ].join("\n");
+
+    const telegram = typeof window !== "undefined"
+      ? (window as TelegramWindow).Telegram?.WebApp
+      : undefined;
+
+    const payload = JSON.stringify({
+      ...reservationSummary,
+      message,
+    });
+
+    if (telegram?.sendData) {
       try {
-        await addItem(product.id, quantity);
-        toast.success(`${product.name} добавлен в корзину!`);
+        telegram.sendData(payload);
+        telegram.close?.();
+        toast.success("Запрос на бронирование отправлен в бот");
+        return;
       } catch (error) {
-        console.error("Error adding to cart:", error);
-        toast.error("Не удалось добавить товар в корзину");
+        console.error("Error sending data to Telegram bot:", error);
       }
+    }
+
+    const encodedPayload = encodePayload(payload);
+    const fallbackLink = process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK ?? SEO_CONFIG.social.telegram;
+
+    if (fallbackLink) {
+      const normalizedLink = fallbackLink.endsWith("/")
+        ? fallbackLink.slice(0, -1)
+        : fallbackLink;
+      const linkWithPayload = encodedPayload
+        ? `${normalizedLink}?start=${encodedPayload}`
+        : normalizedLink;
+
+      if (telegram?.openTelegramLink) {
+        telegram.openTelegramLink(linkWithPayload);
+        telegram.close?.();
+      } else if (typeof window !== "undefined") {
+        window.open(linkWithPayload, "_blank", "noopener,noreferrer");
+      }
+      toast.success("Открываем чат с ботом для бронирования");
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const shareLink = `https://t.me/share/url?text=${encodeURIComponent(message)}`;
+      window.open(shareLink, "_blank", "noopener,noreferrer");
     }
   };
 
@@ -445,16 +528,13 @@ ${product.name}
 
             <div className="flex gap-3">
               <Button
-                onClick={handleAddToCart}
+                onClick={handleReserve}
                 disabled={!product.active || product.stockQuantity === 0}
                 size="lg"
                 className="flex-1"
               >
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                {product.active
-                  ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
-                  : "Нет в наличии"
-                }
+                <TicketCheck className="h-5 w-5 mr-2" />
+                {product.active ? "Забронировать" : "Нет в наличии"}
               </Button>
 
               <Button

@@ -1,26 +1,18 @@
 "use client";
 
 import { useMemo } from "react";
-import { Briefcase, FileText, Home, User } from "lucide-react";
+import { Briefcase, FileText, Home } from "lucide-react";
 
 import { NavBar } from "@/components/ui/tubelight-navbar";
-import { useAuth } from "~/lib/auth-context";
 
 export function MiniAppBottomNav() {
-  const { user } = useAuth();
-
   const navItems = useMemo(
     () => [
       { name: "Главная", url: "/", icon: Home },
       { name: "Магазины", url: "/stores", icon: Briefcase },
       { name: "Заказы", url: "/orders", icon: FileText },
-      {
-        name: user ? "Аккаунт" : "Войти",
-        url: user ? "/auth/sign-out" : "/auth/sign-in",
-        icon: User,
-      },
     ],
-    [user],
+    [],
   );
 
   return (
