@@ -115,7 +115,13 @@ export default function ProductPage() {
     if (telegram?.sendData) {
       try {
         telegram.sendData(payload);
-        telegram.close?.();
+        setTimeout(() => {
+          try {
+            telegram.close?.();
+          } catch (closeError) {
+            console.warn("Telegram close error:", closeError);
+          }
+        }, 200);
         toast.success("Запрос на бронирование отправлен в бот");
         return;
       } catch (error) {
