@@ -157,6 +157,12 @@ interface CreateOrderRequest {
   deliveryNotes?: string;
 }
 
+interface MiniAppReservationRequest {
+  productId: number;
+  quantity: number;
+  note?: string;
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -542,6 +548,26 @@ class ApiClient {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({})) as any;
       throw new Error(errorData.message || 'Failed to create order');
+    }
+
+    return response.json() as Promise<Order>;
+  }
+
+  async reserveProduct(payload: MiniAppReservationRequest): Promise<Order> {
+    const body: MiniAppReservationRequest = {
+      productId: payload.productId,
+      quantity: payload.quantity,
+      ...(payload.note ? { note: payload.note } : {}),
+    };
+
+    const response = await this.fetchWithAuth('/miniapp/reservations', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({})) as { message?: string };
+      throw new Error(errorData?.message || 'Не удалось создать бронирование');
     }
 
     return response.json() as Promise<Order>;

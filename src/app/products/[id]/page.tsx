@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { apiClient, type Product } from "~/lib/api-client";
+import { useAuth } from "~/lib/auth-context";
 import { Button } from "~/ui/primitives/button";
 import { Card, CardContent } from "~/ui/primitives/card";
 import { Separator } from "~/ui/primitives/separator";
@@ -18,8 +19,6 @@ import { ProductMetaTags } from "~/components/ProductMetaTags";
 import { SEO_CONFIG } from "~/app";
 
 type TelegramWebApp = {
-  sendData?: (data: string) => void;
-  openTelegramLink?: (url: string) => void;
   close?: () => void;
 };
 
@@ -27,21 +26,6 @@ type TelegramWindow = Window & {
   Telegram?: {
     WebApp?: TelegramWebApp;
   };
-};
-
-const encodePayload = (value: string) => {
-  try {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(value);
-    let binary = "";
-    bytes.forEach((byte) => {
-      binary += String.fromCharCode(byte);
-    });
-    return encodeURIComponent(btoa(binary));
-  } catch (error) {
-    console.error("Failed to encode payload for Telegram link:", error);
-    return "";
-  }
 };
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
@@ -52,10 +36,12 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
 export default function ProductPage() {
   const params = useParams();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isReserving, setIsReserving] = useState(false);
 
   const productId = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -79,80 +65,68 @@ export default function ProductPage() {
     }
   };
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     if (!product) {
       return;
     }
 
-    const reservationSummary = {
-      action: "reserve_product",
-      productId: product.id,
-      productName: product.name,
-      storeName: product.storeName,
-      quantity,
-      unitPrice: product.price,
-      totalPrice: product.price * quantity,
-      timestamp: new Date().toISOString(),
-    };
+    if (!product.active || product.stockQuantity === 0) {
+      toast.error("Коробка больше недоступна");
+      return;
+    }
 
-    const message = [
-      "🔒 Бронирование FoodSave",
-      `Коробка: ${product.name}`,
-      `Магазин: ${product.storeName}`,
-      `Количество: ${quantity}`,
-      `Итого: ${CURRENCY_FORMATTER.format(product.price * quantity)}`,
-    ].join("\n");
+    if (!isAuthenticated) {
+      toast.error("Авторизуйтесь через Telegram, чтобы забронировать коробку");
+      return;
+    }
 
-    const telegram = typeof window !== "undefined"
-      ? (window as TelegramWindow).Telegram?.WebApp
-      : undefined;
+    if (isReserving) {
+      return;
+    }
 
-    const payload = JSON.stringify({
-      ...reservationSummary,
-      message,
-    });
+    try {
+      setIsReserving(true);
+      await apiClient.reserveProduct({
+        productId: product.id,
+        quantity,
+      });
 
-    if (telegram?.sendData) {
-      try {
-        telegram.sendData(payload);
+      toast.success(`Коробка забронирована на сумму ${CURRENCY_FORMATTER.format(product.price * quantity)}. Детали отправлены в чат с ботом.`);
+
+      setProduct((prev) => {
+        if (!prev) {
+          return prev;
+        }
+        const remaining = Math.max(prev.stockQuantity - quantity, 0);
+        return {
+          ...prev,
+          stockQuantity: remaining,
+          active: remaining > 0 ? prev.active : false,
+        };
+      });
+      setQuantity(1);
+
+      const telegram = typeof window !== "undefined"
+        ? (window as TelegramWindow).Telegram?.WebApp
+        : undefined;
+
+      if (telegram?.close) {
         setTimeout(() => {
           try {
             telegram.close?.();
           } catch (closeError) {
             console.warn("Telegram close error:", closeError);
           }
-        }, 200);
-        toast.success("Запрос на бронирование отправлен в бот");
-        return;
-      } catch (error) {
-        console.error("Error sending data to Telegram bot:", error);
+        }, 400);
       }
-    }
-
-    const encodedPayload = encodePayload(payload);
-    const fallbackLink = process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK ?? SEO_CONFIG.social.telegram;
-
-    if (fallbackLink) {
-      const normalizedLink = fallbackLink.endsWith("/")
-        ? fallbackLink.slice(0, -1)
-        : fallbackLink;
-      const linkWithPayload = encodedPayload
-        ? `${normalizedLink}?start=${encodedPayload}`
-        : normalizedLink;
-
-      if (telegram?.openTelegramLink) {
-        telegram.openTelegramLink(linkWithPayload);
-        telegram.close?.();
-      } else if (typeof window !== "undefined") {
-        window.open(linkWithPayload, "_blank", "noopener,noreferrer");
-      }
-      toast.success("Открываем чат с ботом для бронирования");
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const shareLink = `https://t.me/share/url?text=${encodeURIComponent(message)}`;
-      window.open(shareLink, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : "Не удалось забронировать коробку";
+      toast.error(message);
+      console.error("Reservation error:", error);
+    } finally {
+      setIsReserving(false);
     }
   };
 
@@ -535,12 +509,22 @@ ${product.name}
             <div className="flex gap-3">
               <Button
                 onClick={handleReserve}
-                disabled={!product.active || product.stockQuantity === 0}
+                disabled={isReserving || !product.active || product.stockQuantity === 0}
                 size="lg"
                 className="flex-1"
+                aria-busy={isReserving}
               >
-                <TicketCheck className="h-5 w-5 mr-2" />
-                {product.active ? "Забронировать" : "Нет в наличии"}
+                {isReserving ? (
+                  <>
+                    <Clock className="h-5 w-5 mr-2 animate-spin" />
+                    Бронируем...
+                  </>
+                ) : (
+                  <>
+                    <TicketCheck className="h-5 w-5 mr-2" />
+                    {product.active ? "Забронировать" : "Нет в наличии"}
+                  </>
+                )}
               </Button>
 
               <Button
