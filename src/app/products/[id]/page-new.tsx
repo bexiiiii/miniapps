@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Minus, Plus, ShoppingCart, Star, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Star, Clock, MapPin, TicketCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -59,7 +59,7 @@ export default function ProductPage() {
         image: product.imageUrl,
         category: product.category,
       }, quantity);
-      toast.success(`${product.name} добавлен в корзину!`);
+      toast.success(`${product.name} забронирована!`);
     }
   };
 
@@ -272,9 +272,9 @@ export default function ProductPage() {
               size="lg"
               className="w-full"
             >
-              <ShoppingCart className="h-5 w-5 mr-2" />
+              <TicketCheck className="h-5 w-5 mr-2" />
               {product.isAvailable
-                ? `Добавить в корзину • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
+                ? `Забронировать • ${CURRENCY_FORMATTER.format(product.price * quantity)}`
                 : "Нет в наличии"
               }
             </Button>

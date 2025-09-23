@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { Heart, Star, TicketCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -219,9 +219,9 @@ export function ProductCard({
                     `}
                   />
                 ) : (
-                  <ShoppingCart className="h-4 w-4" />
+                  <TicketCheck className="h-4 w-4" />
                 )}
-                Добавить в корзину
+                Забронировать
               </Button>
             </CardFooter>
           )}
@@ -254,9 +254,9 @@ export function ProductCard({
                       `}
                     />
                   ) : (
-                    <ShoppingCart className="h-4 w-4" />
+                    <TicketCheck className="h-4 w-4" />
                   )}
-                  <span className="sr-only">Add to cart</span>
+                  <span className="sr-only">Забронировать</span>
                 </Button>
               </div>
             </CardFooter>

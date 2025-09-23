@@ -113,7 +113,7 @@ export default function ProductsPage() {
         image: product.imageUrl,
         category: product.category,
       }, 1);
-      toast.success("Товар добавлен в корзину!");
+      toast.success("Бронь создана!");
     }
   };
 

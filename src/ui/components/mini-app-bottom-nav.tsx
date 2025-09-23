@@ -9,7 +9,7 @@ export function MiniAppBottomNav() {
   const navItems = useMemo(
     () => [
       { name: "Главная", url: "/", icon: Home },
-      { name: "Магазины", url: "/stores", icon: Briefcase },
+      { name: "Заведения", url: "/stores", icon: Briefcase },
       { name: "Заказы", url: "/orders", icon: FileText },
     ],
     [],
