@@ -9,6 +9,7 @@ import { cn } from "~/lib/cn";
 import { Badge } from "~/ui/primitives/badge";
 import { Button } from "~/ui/primitives/button";
 import { Card, CardContent, CardFooter } from "~/ui/primitives/card";
+import { useLanguage } from "~/contexts/language-context";
 
 type ProductCardProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -37,6 +38,7 @@ export function ProductCard({
   variant = "default",
   ...props
 }: ProductCardProps) {
+  const { t } = useLanguage();
   const [isHovered, setIsHovered] = React.useState(false);
   const [isAddingToCart, setIsAddingToCart] = React.useState(false);
   const [isInWishlist, setIsInWishlist] = React.useState(false);
@@ -221,7 +223,7 @@ export function ProductCard({
                 ) : (
                   <TicketCheck className="h-4 w-4" />
                 )}
-                Забронировать
+                {t("products.reserve")}
               </Button>
             </CardFooter>
           )}
@@ -256,7 +258,7 @@ export function ProductCard({
                   ) : (
                     <TicketCheck className="h-4 w-4" />
                   )}
-                  <span className="sr-only">Забронировать</span>
+                  <span className="sr-only">{t("products.reserve")}</span>
                 </Button>
               </div>
             </CardFooter>

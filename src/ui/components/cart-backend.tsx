@@ -37,6 +37,7 @@ import { OrderReceipt } from "./order-receipt";
 import { OrderForm } from "./order-form";
 import { useAuth } from "~/lib/auth-context";
 import { OutOfStockManager } from "~/components/cart/OutOfStockManager";
+import { useLanguage } from "~/contexts/language-context";
 
 // Remove the inline OrderForm component since we're using the one from order-form.tsx
 const LocalOrderForm = ({ subtotal, total, onSubmit, onCancel, loading, items }: {
@@ -336,6 +337,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
   const [orderData, setOrderData] = React.useState<any>(null);
   const [isSubmittingOrder, setIsSubmittingOrder] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { t } = useLanguage();
 
   const {
     items,
@@ -496,9 +498,9 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between border-b px-6 py-4">
             <div>
-              <h3 className="text-lg font-semibold">Корзина</h3>
+              <h3 className="text-lg font-semibold">{t("cart.title")}</h3>
               <p className="text-sm text-muted-foreground">
-                {itemCount} {itemCount === 1 ? 'товар' : itemCount < 5 ? 'товара' : 'товаров'}
+                {itemCount} {itemCount === 1 ? t("products.viewProduct") : t("nav.products")}
               </p>
             </div>
             {items && items.length > 0 && (
@@ -508,7 +510,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
                 variant="ghost"
                 disabled={loading}
               >
-                Очистить
+                {t("common.clear")}
               </Button>
             )}
           </div>
@@ -536,10 +538,10 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
               <div className="flex flex-col items-center justify-center p-12">
                 <ShoppingCart className="h-12 w-12 text-muted-foreground/50" />
                 <p className="mt-4 text-center text-muted-foreground">
-                  Ваша корзина пуста
+                  {t("cart.emptyCart")}
                 </p>
                 <p className="mt-1 text-center text-sm text-muted-foreground">
-                  Добавьте товары для оформления заказа
+                  {t("cart.subtitle")}
                 </p>
               </div>
             ) : (
@@ -625,7 +627,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
                 disabled={loading}
                 onClick={handleProceedToOrder}
               >
-                Оформить заказ
+                {t("cart.checkout")}
               </Button>
               <Link href="/products">
                 <Button
@@ -634,7 +636,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
                   size="lg"
                   onClick={() => setIsOpen(false)}
                 >
-                  Продолжить покупки
+                  {t("cart.continueShoppingButton")}
                 </Button>
               </Link>
             </div>
@@ -654,7 +656,7 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
             currentView === "order" ? "sm:max-w-2xl" : ""
           )}>
             <SheetHeader className="sr-only">
-              <SheetTitle>Корзина</SheetTitle>
+              <SheetTitle>{t("cart.title")}</SheetTitle>
             </SheetHeader>
             <div className="h-full">
               <CartContent />
@@ -671,8 +673,8 @@ export function CartBackend({ CartTrigger, className }: CartBackendProps) {
         <DrawerTrigger asChild>{CartTrigger}</DrawerTrigger>
         <DrawerContent className="max-h-[90vh]">
           <DrawerHeader className="sr-only">
-            <DrawerTitle>Корзина</DrawerTitle>
-            <DrawerDescription>Товары в корзине</DrawerDescription>
+            <DrawerTitle>{t("cart.title")}</DrawerTitle>
+            <DrawerDescription>{t("cart.subtitle")}</DrawerDescription>
           </DrawerHeader>
           <div className="h-full">
             <CartContent />

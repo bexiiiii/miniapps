@@ -11,6 +11,8 @@ import { SEO_CONFIG } from "~/app";
 import { CartProvider } from "~/lib/hooks/use-cart";
 import { CartBackendProvider } from "~/lib/hooks/use-cart-backend";
 import { AuthProvider } from "~/lib/auth-context";
+import { LanguageProvider } from "~/contexts/language-context";
+import { i18n } from "~/i18n-config";
 import { cn } from "~/lib/cn";
 import "~/css/globals.css";
 import { Footer } from "~/ui/components/footer";
@@ -212,17 +214,19 @@ export default function RootLayout({
           enableSystem
         >
           {/* <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} /> */}
-          <AuthProvider>
-            <CartProvider>
-              <CartBackendProvider>
-                <Header showAuth={true} />
-                <main className={`flex min-h-screen flex-col pb-28`}>{children}</main>
-                <Footer />
-                <MiniAppBottomNav />
-                <Toaster />
-              </CartBackendProvider>
-            </CartProvider>
-          </AuthProvider>
+          <LanguageProvider initialLocale={i18n.defaultLocale}>
+            <AuthProvider>
+              <CartProvider>
+                <CartBackendProvider>
+                  <Header showAuth={true} />
+                  <main className={`flex min-h-screen flex-col pb-28`}>{children}</main>
+                  <Footer />
+                  <MiniAppBottomNav />
+                  <Toaster />
+                </CartBackendProvider>
+              </CartProvider>
+            </AuthProvider>
+          </LanguageProvider>
         </ThemeProvider>
         <SpeedInsights />
       </body>

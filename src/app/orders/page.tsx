@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/ui/primitives/card";
 import { Badge } from "~/ui/primitives/badge";
 import { Skeleton } from "~/ui/primitives/skeleton";
 import { Separator } from "~/ui/primitives/separator";
+import { useLanguage } from "~/contexts/language-context";
 
 interface OrderItem {
   id: string;
@@ -43,6 +44,7 @@ interface Order {
 }
 
 export default function OrdersPage() {
+  const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -226,7 +228,7 @@ export default function OrdersPage() {
         setOrders(mockOrders);
       }
     } catch (err) {
-      setError("Ошибка при загрузке заказов");
+      setError(t("orders.loadError"));
       console.error("Error fetching orders:", err);
     } finally {
       setLoading(false);
@@ -280,35 +282,35 @@ export default function OrdersPage() {
         return (
           <Badge className="bg-green-100 text-green-800">
             <CheckCircle className="w-3 h-3 mr-1" />
-            Выполнен
+            {t("orders.completed")}
           </Badge>
         );
       case "processing":
         return (
           <Badge className="bg-yellow-100 text-yellow-800">
             <Clock className="w-3 h-3 mr-1" />
-            В обработке
+            {t("orders.processing")}
           </Badge>
         );
       case "cancelled":
         return (
           <Badge className="bg-red-100 text-red-800">
             <XCircle className="w-3 h-3 mr-1" />
-            Отменен
+            {t("orders.cancelled")}
           </Badge>
         );
       case "pending":
         return (
           <Badge className="bg-blue-100 text-blue-800">
             <Clock className="w-3 h-3 mr-1" />
-            Ожидает
+            {t("orders.pending")}
           </Badge>
         );
       default:
         return (
           <Badge className="bg-gray-100 text-gray-800">
             <Package className="w-3 h-3 mr-1" />
-            Новый
+            {t("orders.new")}
           </Badge>
         );
     }
@@ -317,11 +319,11 @@ export default function OrdersPage() {
   const getPaymentMethodText = (method: string) => {
     switch (method.toLowerCase()) {
       case "card":
-        return "Банковская карта";
+        return t("orders.paymentCard");
       case "cash":
-        return "Наличные";
+        return t("orders.paymentCash");
       case "online":
-        return "Онлайн оплата";
+        return t("orders.paymentOnline");
       default:
         return method;
     }
@@ -363,9 +365,9 @@ export default function OrdersPage() {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-destructive mb-4">Ошибка</h1>
+          <h1 className="text-2xl font-bold text-destructive mb-4">{t("orders.error")}</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={fetchOrders}>Попробовать снова</Button>
+          <Button onClick={fetchOrders}>{t("orders.tryAgain")}</Button>
         </div>
       </div>
     );
@@ -381,9 +383,9 @@ export default function OrdersPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">История заказов</h1>
+          <h1 className="text-3xl font-bold">{t("orders.titleMain")}</h1>
           <p className="text-muted-foreground">
-            Всего заказов: {orders.length}
+            {t("orders.totalOrders")}: {orders.length}
           </p>
         </div>
       </div>
@@ -393,12 +395,12 @@ export default function OrdersPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Package className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Заказов пока нет</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("orders.noOrdersYet")}</h3>
             <p className="text-muted-foreground text-center mb-4">
-              Когда вы сделаете первый заказ, он появится здесь
+              {t("orders.noOrdersDescription")}
             </p>
             <Link href="/products">
-              <Button>Перейти к покупкам</Button>
+              <Button>{t("orders.goToProducts")}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -409,13 +411,13 @@ export default function OrdersPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">Заказ {order.orderNumber}</CardTitle>
+                    <CardTitle className="text-lg">{t("orders.order")} {order.orderNumber}</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(order.createdAt)}
                     </p>
                     {order.storeName && (
                       <p className="text-sm text-muted-foreground">
-                        Магазин: {order.storeName}
+                        {t("orders.store")}: {order.storeName}
                       </p>
                     )}
                   </div>
@@ -438,7 +440,7 @@ export default function OrdersPage() {
                       />
                       <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
                         <QrCode className="h-3 w-3" />
-                        QR код заказа
+                        {t("orders.qrCode")}
                       </p>
                     </div>
                   ) : (
@@ -450,7 +452,7 @@ export default function OrdersPage() {
 
                 {/* Order Items */}
                 <div>
-                  <h4 className="font-semibold mb-3">Состав заказа:</h4>
+                  <h4 className="font-semibold mb-3">{t("orders.orderComposition")}:</h4>
                   <div className="space-y-2">
                     {order.items.map((item) => (
                       <div key={item.id} className="flex items-center justify-between py-2">
@@ -473,7 +475,7 @@ export default function OrdersPage() {
                             </p>
                             {item.categoryName && (
                               <p className="text-xs text-muted-foreground">
-                                Категория: {item.categoryName}
+                                {t("orders.category")}: {item.categoryName}
                               </p>
                             )}
                           </div>
@@ -489,24 +491,24 @@ export default function OrdersPage() {
                 {/* Order Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-muted-foreground">Способ оплаты:</p>
+                    <p className="text-muted-foreground">{t("orders.paymentMethod")}:</p>
                     <p className="font-medium">
                       {getPaymentMethodText(order.paymentMethod)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Контактный телефон:</p>
+                    <p className="text-muted-foreground">{t("orders.contactPhone")}:</p>
                     <p className="font-medium">{order.contactPhone || "—"}</p>
                   </div>
                   {order.storeAddress && (
                     <div>
-                      <p className="text-muted-foreground">Адрес магазина:</p>
+                      <p className="text-muted-foreground">{t("orders.storeAddress")}:</p>
                       <p className="font-medium">{order.storeAddress}</p>
                     </div>
                   )}
                   {order.deliveryNotes && (
                     <div className="md:col-span-2">
-                      <p className="text-muted-foreground">Комментарий к доставке:</p>
+                      <p className="text-muted-foreground">{t("orders.deliveryComment")}:</p>
                       <p className="font-medium">{order.deliveryNotes}</p>
                     </div>
                   )}
@@ -516,7 +518,7 @@ export default function OrdersPage() {
 
                 {/* Order Total */}
                 <div className="flex justify-between items-center text-lg font-semibold">
-                  <span>Итого:</span>
+                  <span>{t("orders.total")}:</span>
                   <span>{order.total} ₸</span>
                 </div>
               </CardContent>

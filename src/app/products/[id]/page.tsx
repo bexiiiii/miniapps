@@ -17,6 +17,7 @@ import { Badge } from "~/ui/primitives/badge";
 import { cn } from "~/lib/cn";
 import { ProductMetaTags } from "~/components/ProductMetaTags";
 import { SEO_CONFIG } from "~/app";
+import { useLanguage } from "~/contexts/language-context";
 
 type TelegramWebApp = {
   close?: () => void;
@@ -34,6 +35,7 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("ru-RU", {
 });
 
 export default function ProductPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
@@ -71,12 +73,12 @@ export default function ProductPage() {
     }
 
     if (!product.active || product.stockQuantity === 0) {
-      toast.error("Коробка больше недоступна");
+      toast.error(t("products.unavailable"));
       return;
     }
 
     if (!isAuthenticated) {
-      toast.error("Авторизуйтесь через Telegram, чтобы забронировать коробку");
+      toast.error(t("products.authRequired"));
       return;
     }
 
@@ -122,7 +124,7 @@ export default function ProductPage() {
     } catch (error) {
       const message = error instanceof Error
         ? error.message
-        : "Не удалось забронировать коробку";
+        : t("products.reserveFailed");
       toast.error(message);
       console.error("Reservation error:", error);
     } finally {
@@ -522,7 +524,7 @@ ${product.name}
                 ) : (
                   <>
                     <TicketCheck className="h-5 w-5 mr-2" />
-                    {product.active ? "Забронировать" : "Нет в наличии"}
+                    {product.active ? t("products.reserve") : t("products.outOfStock")}
                   </>
                 )}
               </Button>

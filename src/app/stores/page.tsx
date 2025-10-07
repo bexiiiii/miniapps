@@ -9,6 +9,7 @@ import { Badge } from "~/ui/primitives/badge";
 import { Button } from "~/ui/primitives/button";
 import { Input } from "~/ui/primitives/input";
 import { apiClient } from "~/lib/api-client";
+import { useLanguage } from "~/contexts/language-context";
 
 // Используем StoreInfo из api-client
 type Store = {
@@ -30,6 +31,7 @@ type Store = {
 };
 
 export default function StoresPage() {
+  const { t } = useLanguage();
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -161,7 +163,7 @@ export default function StoresPage() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Боксы от партнёров</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">{t("stores.titleMain")}</h1>
           <div className="animate-pulse">
             <div className="h-10 bg-gray-200 rounded mb-6 w-full max-w-md"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -189,17 +191,17 @@ export default function StoresPage() {
         <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-4">
-          Боксы от партнёров
+          {t("stores.titleMain")}
         </h1>
         <p className="text-muted-foreground mb-6">
-          Выберите магазин и найдите боксы с качественными продуктами по выгодным ценам
+          {t("stores.subtitleMain")}
         </p>
 
         {/* Search */}
         <div className="relative max-w-md">
           <Input
             type="text"
-            placeholder="Поиск магазинов..."
+            placeholder={t("stores.search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
@@ -213,8 +215,8 @@ export default function StoresPage() {
           <div className="text-6xl mb-4">🏪</div>
           <p className="text-muted-foreground text-lg">
             {searchTerm 
-              ? "Боксы не найдены. Попробуйте изменить поисковый запрос."
-              : "Боксы пока не добавлены."
+              ? t("stores.noBoxesFound")
+              : t("stores.noBoxesYet")
             }
           </p>
         </div>
@@ -253,7 +255,7 @@ export default function StoresPage() {
                         ? 'bg-green-500 hover:bg-green-600' 
                         : 'bg-gray-400 hover:bg-gray-500'
                     }`}>
-                      {store.productCount > 0 ? `${store.productCount} боксов` : 'Нет боксов'}
+                      {store.productCount > 0 ? `${store.productCount} ${t("stores.boxesCount")}` : t("stores.noBoxes")}
                     </Badge>
                   )}
                 </div>
@@ -277,7 +279,7 @@ export default function StoresPage() {
                       {renderStars(store.rating)}
                       {store.reviewCount && (
                         <span className="text-sm text-muted-foreground">
-                          ({store.reviewCount} отзывов)
+                          ({store.reviewCount} {t("stores.reviews")})
                         </span>
                       )}
                     </div>
@@ -297,7 +299,7 @@ export default function StoresPage() {
                     
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Clock className="h-4 w-4 flex-shrink-0" />
-                      <span>Работаем: {getWorkingHours(store)}</span>
+                      <span>{t("stores.workingHours")}: {getWorkingHours(store)}</span>
                     </div>
                   </div>
 
@@ -305,7 +307,7 @@ export default function StoresPage() {
                   {(store.productCount || 0) > 0 ? (
                     <Link href={`/products?store=${store.id}`}>
                       <Button className="w-full group/btn">
-                        <span>Смотреть боксы</span>
+                        <span>{t("stores.viewBoxes")}</span>
                         <ChevronRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
@@ -314,7 +316,7 @@ export default function StoresPage() {
                       className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 cursor-not-allowed"
                       disabled
                     >
-                      <span>Боксы скоро появятся</span>
+                      <span>{t("stores.boxesSoon")}</span>
                     </Button>
                   )}
                 </div>

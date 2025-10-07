@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { cn } from "~/lib/cn";
 import { partnersData, partnersStats, type Partner } from "~/data/partners";
+import { useLanguage } from "~/contexts/language-context";
 
 interface PartnerCardProps {
   partner: Partner;
@@ -69,6 +70,7 @@ export function PartnersTestimonialStyle({ className }: PartnersTestimonialStyle
   const marqueeRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<null | ReturnType<typeof animate>>(null);
   const isHoveredRef = useRef(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!marqueeRef.current) return;
@@ -141,10 +143,10 @@ export function PartnersTestimonialStyle({ className }: PartnersTestimonialStyle
         {/* Заголовок и описание */}
         <div className="flex flex-col items-center gap-4 px-4 sm:gap-8">
           <h2 className="max-w-[720px] text-3xl leading-tight font-semibold text-lime-500 sm:text-5xl sm:leading-tight">
-            Наши партнеры
+            {t("home.partners.title")}
           </h2>
           <p className="text-md max-w-[600px] font-medium text-muted-foreground sm:text-xl">
-            Проверенные заведения, которые доверяют FoodSave и помогают сократить пищевые отходы
+            {t("home.partners.subtitle")}
           </p>
         </div>
 
@@ -183,7 +185,7 @@ export function PartnersTestimonialStyle({ className }: PartnersTestimonialStyle
               {partnersStats.totalPartners}+
             </div>
             <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              Заведений-партнеров
+              {t("home.partners.count")}
             </div>
           </div>
           <div className="text-center">
@@ -191,7 +193,7 @@ export function PartnersTestimonialStyle({ className }: PartnersTestimonialStyle
               {partnersStats.averageRating}★
             </div>
             <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              Средний рейтинг
+              {t("home.partners.rating")}
             </div>
           </div>
           <div className="text-center">
@@ -199,7 +201,7 @@ export function PartnersTestimonialStyle({ className }: PartnersTestimonialStyle
               {partnersStats.coverage}
             </div>
             <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              Покрытие города
+              {t("home.partners.coverage")}
             </div>
           </div>
         </div>

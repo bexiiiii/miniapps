@@ -4,15 +4,18 @@ import { useMemo } from "react";
 import { Briefcase, FileText, Home } from "lucide-react";
 
 import { NavBar } from "@/components/ui/tubelight-navbar";
+import { useLanguage } from "~/contexts/language-context";
 
 export function MiniAppBottomNav() {
+  const { t } = useLanguage();
+
   const navItems = useMemo(
     () => [
-      { name: "Главная", url: "/", icon: Home },
-      { name: "Заведения", url: "/stores", icon: Briefcase },
-      { name: "Заказы", url: "/orders", icon: FileText },
+      { name: t("nav.home"), url: "/", icon: Home },
+      { name: t("nav.stores"), url: "/stores", icon: Briefcase },
+      { name: t("nav.orders"), url: "/orders", icon: FileText },
     ],
-    [],
+    [t],
   );
 
   return (

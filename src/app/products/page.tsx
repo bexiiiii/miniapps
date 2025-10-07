@@ -10,6 +10,7 @@ import { Badge } from "~/ui/primitives/badge";
 import { Button } from "~/ui/primitives/button";
 import { Input } from "~/ui/primitives/input";
 import { apiClient, type Category } from "~/lib/api-client";
+import { useLanguage } from "~/contexts/language-context";
 
 interface Product {
   id: number;
@@ -38,6 +39,7 @@ interface Product {
 }
 
 function ProductsPageContent() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
   const storeFromUrl = searchParams.get('store');
@@ -330,7 +332,7 @@ function ProductsPageContent() {
 
                   <Link href={`/products/${product.id}`} className="mt-auto">
                     <Button className="w-full" size="sm">
-                      Подробнее
+                      {t("products.moreDetails")}
                     </Button>
                   </Link>
                 </div>

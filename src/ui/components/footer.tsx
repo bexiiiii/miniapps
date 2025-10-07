@@ -8,9 +8,11 @@ import { SEO_CONFIG } from "~/app";
 import { cn } from "~/lib/cn";
 import { apiClient, type Category } from "~/lib/api-client";
 import { Button } from "~/ui/primitives/button";
+import { useLanguage } from "~/contexts/language-context";
 
 export function Footer({ className }: { className?: string }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -61,8 +63,7 @@ export function Footer({ className }: { className?: string }) {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              FoodSave — еда, которую не выбрасывают. 
-              Мы помогаем людям и бизнесу сократить количество пищевых отходов.
+              {t("seo.description")}
             </p>
             <div className="flex space-x-4">
               <Button
@@ -108,7 +109,7 @@ export function Footer({ className }: { className?: string }) {
             </div>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Категории</h3>
+            <h3 className="mb-4 text-sm font-semibold">{t("footer.about")}</h3>
             <ul className="space-y-2 text-sm">
               {categories.map((category) => (
                 <li key={category.id}>
@@ -186,7 +187,7 @@ export function Footer({ className }: { className?: string }) {
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Компания</h3>
+            <h3 className="mb-4 text-sm font-semibold">{t("nav.about")}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -196,7 +197,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/about"
                 >
-                  О нас
+                  {t("nav.about")}
                 </Link>
               </li>
               <li>
@@ -221,7 +222,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/press"
                 >
-                  Пресса
+                  {t("nav.press")}
                 </Link>
               </li>
               <li>
@@ -232,13 +233,13 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/contact"
                 >
-                  Контакты
+                  {t("nav.contact")}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Поддержка</h3>
+            <h3 className="mb-4 text-sm font-semibold">{t("common.settings")}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -248,7 +249,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/help"
                 >
-                  Центр Поддержки
+                  {t("common.info")}
                 </Link>
               </li>
               <li>
@@ -265,7 +266,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/privacy"
                 >
-                  Политика конфиденциальности
+                  {t("footer.privacy")}
                 </Link>
               </li>
               <li>
@@ -276,7 +277,7 @@ export function Footer({ className }: { className?: string }) {
                   `}
                   href="/terms"
                 >
-                  Политика использования
+                  {t("footer.terms")}
                 </Link>
               </li>
             </ul>
@@ -290,7 +291,7 @@ export function Footer({ className }: { className?: string }) {
             `}
           >
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} {SEO_CONFIG.name}. Все права защищены.
+              {t("footer.copyright")}
             </p>
             <div
               className={
@@ -298,10 +299,10 @@ export function Footer({ className }: { className?: string }) {
               }
             >
               <Link className="hover:text-foreground" href="/privacy">
-                Политика конфиденциальности
+                {t("footer.privacy")}
               </Link>
               <Link className="hover:text-foreground" href="/terms">
-                Политика использования
+                {t("footer.terms")}
               </Link>
             
               

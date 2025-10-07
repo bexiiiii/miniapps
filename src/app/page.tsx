@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { apiClient, type Product, type Category } from "~/lib/api-client";
+import { useLanguage } from "~/contexts/language-context";
 import United24Banner from "~/ui/components/banners/u24";
 import { HeroBadge } from "~/ui/components/hero-badge";
 import { FeaturedStores } from "~/ui/components/featured-stores";
@@ -25,38 +26,35 @@ import { SEOStructuredData, LocalBusinessStructuredData } from "~/ui/components/
 
 import { testimonials } from "./mocks";
 
-const featuresWhyChooseUs = [
-  {
-    description:
-      "Забирай заказ в удобное время — без очередей и ожидания.",
-    icon: <Truck className="h-6 w-6 text-primary" />,
-    title: "Удобный самовывоз",
-  },
-  {
-    description:
-      "Твои данные защищены. Оплата проходит через надёжные сервисы.",
-    icon: <ShoppingBag className="h-6 w-6 text-primary" />,
-    title: "Безопасная оплата",
-  },
-  {
-    description:
-      "Есть вопрос? Напиши в WhatsApp или Telegram — ответим быстро.",
-    icon: <Clock className="h-6 w-6 text-primary" />,
-    title: "24/7 Поддержка клиентов",
-  },
-  {
-    description:
-      "Мы работаем только с проверенными кафе и пекарнями. Еда всегда свежая.",
-    icon: <Star className="h-6 w-6 text-primary" />,
-    title: "Гарантия качества",
-  },
-];
-
 export default function HomePage() {
+  const { t } = useLanguage();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  const featuresWhyChooseUs = [
+    {
+      description: t("home.whyChoose.pickup.description"),
+      icon: <Truck className="h-6 w-6 text-primary" />,
+      title: t("home.whyChoose.pickup.title"),
+    },
+    {
+      description: t("home.whyChoose.payment.description"),
+      icon: <ShoppingBag className="h-6 w-6 text-primary" />,
+      title: t("home.whyChoose.payment.title"),
+    },
+    {
+      description: t("home.whyChoose.support.description"),
+      icon: <Clock className="h-6 w-6 text-primary" />,
+      title: t("home.whyChoose.support.title"),
+    },
+    {
+      description: t("home.whyChoose.quality.description"),
+      icon: <Star className="h-6 w-6 text-primary" />,
+      title: t("home.whyChoose.quality.title"),
+    },
+  ];
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
@@ -186,14 +184,14 @@ export default function HomePage() {
                       lg:leading-[1.1]
                     `}
                   >
-                    Еда со скидкой до 80% —  {" "}
+                    {t("home.hero.title").split("—")[0]} —  {" "}
                     <span
                       className={`
                         bg-gradient-to-r from-primary to-primary/70 bg-clip-text
                         text-lime-500
                       `}
                     >
-                      рядом с вами
+                      {t("home.hero.title").split("—")[1]}
                     </span>
                   </h1>
                   <p
@@ -202,7 +200,7 @@ export default function HomePage() {
                       md:text-xl
                     `}
                   >
-                   FoodSave помогает найти вкусную еду от кафе, пекарен и магазинов, которую не успели продать.
+                   {t("home.hero.description")}
                   </p>
                 </div>
                 <div
@@ -218,7 +216,7 @@ export default function HomePage() {
                       `}
                       size="lg"
                     > 
-                      Выбрать боксы <ArrowRight className="h-4 w-4" />
+                      {t("home.cta.viewBoxes")} <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
                   <Link href="/stores">
@@ -229,7 +227,7 @@ export default function HomePage() {
                       `}
                       size="lg"
                     > 
-                      Все Боксы
+                      {t("home.featured.viewAll")}
                     </Button>
                   </Link>
                 </div>
@@ -240,11 +238,11 @@ export default function HomePage() {
                 >
                   <div className="flex items-center gap-1.5">
                     <Truck className="h-5 w-5 text-primary/70" />
-                    <span>Забирай заказ без доставки — быстро и бесплатно</span>
+                    <span>{t("home.hero.noDelivery")}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Clock className="h-5 w-5 text-primary/70" />
-                    <span>Поддержка 24/7</span>
+                    <span>{t("home.hero.support247")}</span>
                   </div>
                 </div>
               </div>
@@ -301,11 +299,11 @@ export default function HomePage() {
                   md:text-4xl
                 `}
               >
-                Популярные категории
+                {t("home.categories.title")}
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p className="mt-4 max-w-2xl text-center text-muted-foreground">
-                Discover products across all categories - from tech gadgets to everyday essentials
+                {t("home.categories.subtitle")}
               </p>
             </div>
             <div
@@ -440,7 +438,7 @@ export default function HomePage() {
             <div className="mt-10 flex justify-center">
               <Link href="/stores">
                 <Button className="group h-12 px-8 bg-lime-500 text-white" size="lg" variant="outline" >
-                  Смотреть все боксы
+                  {t("home.featured.viewAll")}
                   <ArrowRight
                     className={`
                       ml-2 h-4 w-4 transition-transform duration-300
@@ -475,7 +473,7 @@ export default function HomePage() {
                   md:text-4xl
                 `}
               >
-                Почему выбирают FoodSave
+                {t("home.whyChoose.title")}
               </h2>
               <div className="mt-2 h-1 w-12 rounded-full bg-lime-500" />
               <p
@@ -484,7 +482,7 @@ export default function HomePage() {
                   md:text-lg
                 `}
               >
-                Мы делаем экономию вкусной, быстрой и удобной — каждый день.
+                {t("home.whyChoose.subtitle")}
               </p>
             </div>
             <div
@@ -531,9 +529,9 @@ export default function HomePage() {
         {/* Testimonials */}
         <TestimonialsSection
           className="bg-muted/50 py-12 md:py-16"
-          description="Не только мы — послушайте тех, кто уже экономит и ест вкусно с FoodSave."
+          description={t("home.testimonials.subtitle")}
           testimonials={testimonials}
-          title="Что говорят наши пользователи"
+          title={t("home.testimonials.title")}
         />
 
         {/* CTA Section */}
@@ -569,7 +567,7 @@ export default function HomePage() {
                     md:text-4xl
                   `}
                 >
-                   Готовы попробовать FoodSave?
+                   {t("home.cta.title")}
                 </h2>
                 <p
                   className={`
@@ -577,7 +575,7 @@ export default function HomePage() {
                     md:text-xl
                   `}
                 >
-                  Присоединяйся к тем, кто уже получает свежие блюда со скидкой до 80%. Бронируй боксы рядом — пока не расхватали.
+                  {t("home.cta.subtitle")}
                 </p>
                 <div
                   className={`
@@ -590,7 +588,7 @@ export default function HomePage() {
                       className="h-12 px-8 transition-colors duration-200 bg-lime-500"
                       size="lg"
                     >
-                      Зарегистрироваться
+                      {t("home.cta.signup")}
                     </Button>
                   </Link>
                   <Link href="/stores">
@@ -599,7 +597,7 @@ export default function HomePage() {
                       size="lg"
                       variant="outline"
                     >
-                      Посмотреть боксы
+                      {t("home.cta.viewBoxes")}
                     </Button>
                   </Link>
                 </div>
